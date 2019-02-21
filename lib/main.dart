@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'home.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,14 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Share Buddy'),
-        ),
-        body: Center(
-          child: Text('Welcome!!'),
-        ),
-      ),
+      home: Home(),
     );
   }
 }
