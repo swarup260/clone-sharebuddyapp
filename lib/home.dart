@@ -18,7 +18,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     super.initState();
 
     // Init the Tab Controller
-    controller = new TabController(length: 3, vsync: this);
+    controller =  TabController(length: 3, vsync: this);
   }
 
   @override
@@ -29,28 +29,28 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new TabBarView(
-        children: <Widget>[new MapTab(), new ListTab(), new SettingTab()],
+    return  Scaffold(
+      body:  TabBarView(
+        children: <Widget>[ MapTab(),  ListTab(),  SettingTab()],
         controller: controller,
       ),
-      bottomNavigationBar: new Material(
+      bottomNavigationBar:  Material(
         color: Colors.yellow,
-        child: new TabBar(
+        child:  TabBar(
           tabs: <Tab>[
-            new Tab(
-              icon: new Icon(
+             Tab(
+              icon:  Icon(
                 Icons.map,
                 color: Colors.black,
               ),
             ),
-            new Tab(
-              icon: new Icon(
+             Tab(
+              icon:  Icon(
                 Icons.format_list_bulleted,
                 color: Colors.black,
               ),
             ),
-            new Tab(
+             Tab(
               icon: Icon(
                 Icons.settings,
                 color: Colors.black,
