@@ -5,8 +5,9 @@ class ListTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        //statusBarColor: Colors.yellow, //or set color with: Color(0xFF0000FF)
-        ));
+      statusBarColor:
+          Theme.of(context).primaryColor, //or set color with: Color(0xFF0000FF)
+    ));
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -63,14 +64,16 @@ class ListTab extends StatelessWidget {
                         ),
                         SizedBox(height: 10.0),
                         Padding(
-                          padding: EdgeInsets.only(left: 165.0, right: 0.0),
-                          child: RaisedButton(
-                              textColor: Colors.white,
-                              color: Colors.black,
-                              child: Text("Search"),
-                              onPressed: () {},
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0))),
+                          padding: EdgeInsets.only(left: 0.0, right: 0.0),
+                          child: Center(
+                            child: RaisedButton(
+                                textColor: Colors.white,
+                                color: Colors.black,
+                                child: Text("Search"),
+                                onPressed: () {},
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0))),
+                          ),
                         )
                       ],
                     )
@@ -100,66 +103,84 @@ Widget itemCard() {
       padding: EdgeInsets.only(left: 8.0),
       child: Row(
         children: <Widget>[
-          Container(
-            width: 300.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Text(
-                  "RAWALPADA",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.0,
+          Expanded(
+            flex: 8,
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text(
+                    "RAWALPADA",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.0,
+                    ),
                   ),
-                ),
-                Text(
-                  "(RAWALPADA 297 BUS STOP)",
-                  style: TextStyle(color: Colors.grey),
-                ),
-                Text(
-                  "BORIVAI RAILWAY STATION",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.0,
+                  Row(
+                    children: <Widget>[
+                      Icon(Icons.swap_vert),
+                      Text(
+                        "(RAWALPADA 297 BUS STOP)",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  Text(
+                    "BORIVAI RAILWAY STATION",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                Text(
-                  "\u20B9" + "10",
-                  style: TextStyle(
-                      color: Colors.lightGreen,
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "(4KM)",
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ],
+          Expanded(
+            flex: 2,
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Text(
+                    "\u20B9" + "10",
+                    style: TextStyle(
+                        color: Colors.lightGreen,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "(4KM)",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Icon(Icons.local_taxi),
+                ],
+              ),
             ),
           ),
-          Container(
-            width: 30,
-            padding: EdgeInsets.only(top: 5.0, right: 5.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: Colors.lightGreen,
-                  radius: 5.0,
-                ),
-              ],
+          Expanded(
+            flex: 0,
+            child: Container(
+              padding: EdgeInsets.only(top: 5.0, right: 5.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  // Icon(
+                  //   Icons.check_circle,
+                  //   color: Colors.green,
+                  //   size: 15.0,
+                  // )
+                  CircleAvatar(
+                    backgroundColor: Colors.lightGreen,
+                    radius: 5.0,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
