@@ -79,11 +79,29 @@ class ListTab extends StatelessWidget {
                     )
                   ],
                 ),
-                itemCard(),
-                itemCard(),
-                itemCard(),
-                itemCard(),
-                itemCard(),
+                itemCard(
+                    'RAWALPADA',
+                    'BORIVAI RAILWAY STATION',
+                    '(RAWALPADA 297 BUS STOP)',
+                    '10',
+                    '(4KM)',
+                    'assets/images/auto.png'),
+                itemCard('MINDSPACE MALAD', 'MADAL RAILWAY STATION',
+                    '(INTERFACE 16)', '12', '(5KM)', 'assets/images/taxi.png'),
+                itemCard(
+                    'BORIVAI RAILWAY STATION',
+                    'RAWALPADA',
+                    '(BORIVALI 297 BUS STOP)',
+                    '15',
+                    '(4KM)',
+                    'assets/images/auto.png'),
+                itemCard(
+                    'RAWALPADA',
+                    'BORIVAI RAILWAY STATION',
+                    '(RAWALPADA 297 BUS STOP)',
+                    '10',
+                    '(4KM)',
+                    'assets/images/auto.png'),
               ],
             ),
           ],
@@ -93,7 +111,7 @@ class ListTab extends StatelessWidget {
   }
 }
 
-Widget itemCard() {
+Widget itemCard(from, to, landmark, price, kilometer, type) {
   return Padding(
     padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
     child: Card(
@@ -111,7 +129,7 @@ Widget itemCard() {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Text(
-                    "RAWALPADA",
+                    from,
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
@@ -122,13 +140,13 @@ Widget itemCard() {
                     children: <Widget>[
                       Icon(Icons.swap_vert),
                       Text(
-                        "(RAWALPADA 297 BUS STOP)",
+                        landmark,
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
                   Text(
-                    "BORIVAI RAILWAY STATION",
+                    to,
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w600,
@@ -147,17 +165,22 @@ Widget itemCard() {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Text(
-                    "\u20B9" + "10",
+                    "\u20B9" + price,
                     style: TextStyle(
                         color: Colors.lightGreen,
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "(4KM)",
+                    kilometer,
                     style: TextStyle(color: Colors.grey),
                   ),
-                  Icon(Icons.local_taxi),
+                  //Icon(Icons.local_taxi),
+                  Image.asset(
+                    type,
+                    width: 35,
+                    height: 35,
+                  ),
                 ],
               ),
             ),
