@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:share_buddy/tabs/screens/about_us.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingTab extends StatelessWidget {
   List<Widget> _list = [
-    SettingField(label_name: 'Edit Account'),
     ReceiveNotification(),
-    SettingField(label_name: 'Login'),
     SettingField(label_name: 'Send Feedback'),
     SettingField(label_name: 'Rate Us'),
-    SettingField(label_name: 'About Us')
+    SettingField(label_name: 'About Us'),
+    SettingField(
+      label_name: 'Follow Us',
+    ),
+    Share()
   ];
   @override
   Widget build(BuildContext context) {
@@ -95,11 +99,22 @@ class NestedSetting extends StatelessWidget {
                 title: Text('Anonymous'),
               ),
               actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.person),
-                  tooltip: 'User',
-                  onPressed: () {},
-                )
+                Padding(
+                  child: PopupMenuButton(
+                    child: Icon(Icons.person),
+                    onCanceled: () {},
+                    tooltip: 'User',
+                    itemBuilder: (BuildContext context) {
+                      return Choices.choices
+                          .map((String choices) => PopupMenuItem<String>(
+                                value: choices,
+                                child: Text(choices),
+                              ))
+                          .toList();
+                    },
+                  ),
+                  padding: EdgeInsets.all(10),
+                ),
               ],
             )
           ];
@@ -148,6 +163,39 @@ class _ReceiveNotificationState extends State<ReceiveNotification> {
                 enabled = true;
               });
             },
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class Share extends StatelessWidget {
+  final Widget child;
+
+  Share({Key key, this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Flexible(
+          child: Padding(
+            child: Text(
+              'Share',
+              style: TextStyle(fontSize: 18),
+            ),
+            padding: EdgeInsets.all(10),
+          ),
+        ),
+        Flexible(
+          child: GestureDetector(
+            child: Padding(
+              child: Icon(Icons.share),
+              padding: EdgeInsets.all(10),
+            ),
+            onTap: () {},
           ),
         )
       ],
@@ -231,6 +279,43 @@ class SettingField extends StatelessWidget {
                 );
               });
           break;
+        case 'About Us':
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => new AboutUsPage()));
+          break;
+        case 'Follow Us':
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(
+                        FontAwesomeIcons.facebook,
+                        size: 40,
+                        color: Colors.blue,
+                      ),
+                      Icon(
+                        FontAwesomeIcons.twitter,
+                        size: 40,
+                        color: Colors.lightBlue,
+                      ),
+                      Icon(
+                        FontAwesomeIcons.google,
+                        size: 40,
+                        color: Colors.red,
+                      ),
+                      Icon(
+                        FontAwesomeIcons.instagram,
+                        size: 40,
+                        color: Colors.pink,
+                      )
+                    ],
+                  ),
+                );
+              });
+          break;
         default:
           Scaffold.of(context).showSnackBar(SnackBar(
             content: Text('tap working'),
@@ -272,3 +357,12 @@ class SettingField extends StatelessWidget {
 //           )
 //         ],
 //       )
+
+/* choices  */
+
+class Choices {
+  static const String login = "Login";
+  static const String register = "register";
+
+  static const List<String> choices = [login, register];
+}
