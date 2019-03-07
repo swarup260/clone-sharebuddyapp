@@ -6,7 +6,8 @@ class SettingTab extends StatelessWidget {
     ReceiveNotification(),
     SettingField(label_name: 'Login'),
     SettingField(label_name: 'Send Feedback'),
-    SettingField(label_name: 'Rate Us')
+    SettingField(label_name: 'Rate Us'),
+    SettingField(label_name: 'About Us')
   ];
   @override
   Widget build(BuildContext context) {
@@ -127,7 +128,7 @@ class _ReceiveNotificationState extends State<ReceiveNotification> {
   @override
   bool enabled = false;
   Widget build(BuildContext context) {
-    return new Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Flexible(
@@ -169,7 +170,39 @@ class SettingField extends StatelessWidget {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  content: Text('Send FeedBack'),
+                  content: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(1))),
+
+                            // hintText: hintText
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.multiline,
+                          maxLength: 100,
+                          decoration: InputDecoration(
+                            labelText: 'FeedBack',
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(1))),
+
+                            // hintText: hintText
+                          ),
+                        ),
+                      ],
+                    ),
+                    height: 150,
+                  ),
                   actions: <Widget>[
                     FlatButton(
                       child: Icon(Icons.send),
