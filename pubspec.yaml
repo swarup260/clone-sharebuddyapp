@@ -24,6 +24,10 @@ dependencies:
   google_maps_flutter: 0.3.0+2
   font_awesome_flutter: ^8.4.0
 
+  # Get Location on Android and iOS.
+  location: ^2.0.0
+
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

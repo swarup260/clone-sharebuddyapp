@@ -18,7 +18,7 @@ class AboutUsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "ShareBubby".toUpperCase(),
+                "ShareBuddy".toUpperCase(),
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
@@ -30,7 +30,7 @@ class AboutUsPage extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              Text(' 2019-2040 ShareBubby Inc.'),
+              Text(' 2019-2040 ShareBuddy Inc.'),
               Text('All right reserved.'),
               SizedBox(
                 height: 40,
