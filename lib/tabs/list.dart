@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+
+import '../models/GetLocation.dart';
 
 class ListTab extends StatelessWidget {
   @override
@@ -13,7 +18,7 @@ class ListTab extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             SearchPanel(),
-            SearchResultPanel(),
+            //SearchResultPanel(),
           ],
         ),
       ),
@@ -22,7 +27,51 @@ class ListTab extends StatelessWidget {
 }
 
 /* Search Section */
-class SearchPanel extends StatelessWidget {
+
+class SearchPanel extends StatefulWidget {
+  @override
+  _SearchPanelState createState() => _SearchPanelState();
+}
+
+class _SearchPanelState extends State<SearchPanel> {
+  List<GetLocation> list = List();
+  var isLoading = false;
+  bool _validate = false;
+  String from = "";
+  String to = "";
+
+  final TextEditingController fromController = new TextEditingController();
+  final TextEditingController toController = new TextEditingController();
+
+  _fetchData() async {
+    setState(() {
+      from.isEmpty ? _validate = true : _validate = false;
+      isLoading = true;
+    });
+
+    final response = await http.post(
+      "https://sharing-point-dev.herokuapp.com/location/getLocationFromTo",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.NykEM4bbRJYDCkP84ExLGhOkqBkDCe-avND2YoHXOFY",
+      },
+      body: ({"from": from, "to": to}),
+    );
+    if (response.statusCode == 200) {
+      print(response.body);
+      list = (json.decode(response.body) as List)
+          .map((data) => new GetLocation.fromJson(data))
+          .toList();
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to load photos');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -41,15 +90,22 @@ class SearchPanel extends StatelessWidget {
               child: Material(
                 elevation: 5.0,
                 borderRadius: BorderRadius.circular(20.0),
-                child: TextFormField(
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.my_location,
-                            color: Colors.black, size: 30.0),
-                        contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                        hintText: 'Source',
-                        hintStyle: TextStyle(
-                            color: Colors.grey, fontFamily: 'Quicksand'))),
+                child: TextField(
+                  controller: fromController,
+                  onChanged: (String text) {
+                    from = text;
+                  },
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.my_location,
+                        color: Colors.black, size: 30.0),
+                    contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+                    hintText: 'Source',
+                    hintStyle:
+                        TextStyle(color: Colors.grey, fontFamily: 'Quicksand'),
+                    errorText: _validate ? 'Please Select Source.' : null,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 5.0),
@@ -58,15 +114,22 @@ class SearchPanel extends StatelessWidget {
               child: Material(
                 elevation: 5.0,
                 borderRadius: BorderRadius.circular(20.0),
-                child: TextFormField(
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon:
-                            Icon(Icons.place, color: Colors.black, size: 30.0),
-                        contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                        hintText: 'Destination',
-                        hintStyle: TextStyle(
-                            color: Colors.grey, fontFamily: 'Quicksand'))),
+                child: TextField(
+                  controller: toController,
+                  onChanged: (String text) {
+                    to = text;
+                  },
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon:
+                        Icon(Icons.place, color: Colors.black, size: 30.0),
+                    contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+                    hintText: 'Destination',
+                    hintStyle:
+                        TextStyle(color: Colors.grey, fontFamily: 'Quicksand'),
+                    errorText: _validate ? 'Please Select Destination.' : null,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 10.0),
@@ -77,11 +140,16 @@ class SearchPanel extends StatelessWidget {
                     textColor: Colors.white,
                     color: Colors.black,
                     child: Text("Search"),
-                    onPressed: () {},
+                    onPressed: _fetchData,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0))),
               ),
-            )
+            ),
+            isLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : SearchResultPanel(getLocationResponse: list),
           ],
         ),
       ],
@@ -91,35 +159,39 @@ class SearchPanel extends StatelessWidget {
 
 /* Result Section */
 class SearchResultPanel extends StatelessWidget {
+  final List getLocationResponse;
+  SearchResultPanel({Key key, @required List getLocationResponse})
+      : getLocationResponse = getLocationResponse,
+        super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        ResultCard(
-            'RAWALPADA',
-            'BORIVAI RAILWAY STATION',
-            '(RAWALPADA 297 BUS STOP)',
-            '10',
-            '(4KM)',
-            'assets/images/auto.png'),
-        ResultCard('MINDSPACE MALAD', 'MADAL RAILWAY STATION', '(INTERFACE 16)',
-            '12', '(5KM)', 'assets/images/taxi.png'),
-        ResultCard('BORIVAI RAILWAY STATION', 'RAWALPADA',
-            '(BORIVALI 297 BUS STOP)', '15', '(4KM)', 'assets/images/auto.png'),
-        ResultCard(
-            'RAWALPADA',
-            'BORIVAI RAILWAY STATION',
-            '(RAWALPADA 297 BUS STOP)',
-            '10',
-            '(4KM)',
-            'assets/images/auto.png'),
+        ListView.builder(
+            shrinkWrap: true,
+            itemCount: getLocationResponse.length,
+            itemBuilder: (BuildContext context, int index) {
+              return resultCard(
+                getLocationResponse[index].from,
+                getLocationResponse[index].to,
+                getLocationResponse[index].landmark,
+                getLocationResponse[index].price,
+                getLocationResponse[index].kilometer + " KM",
+                getLocationResponse[index].type == "Auto"
+                    ? 'assets/images/auto.png'
+                    : 'assets/images/taxi.png',
+                getLocationResponse[index].verified
+                    ? Colors.lightGreen
+                    : Colors.redAccent,
+              );
+            })
       ],
     );
   }
 }
 
 /* Search Result Card */
-Widget ResultCard(from, to, landmark, price, kilometer, type) {
+Widget resultCard(from, to, landmark, price, kilometer, type, verified) {
   return Padding(
     padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
     child: Card(
@@ -175,7 +247,7 @@ Widget ResultCard(from, to, landmark, price, kilometer, type) {
                   Text(
                     "\u20B9" + price,
                     style: TextStyle(
-                        color: Colors.lightGreen,
+                        color: verified,
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold),
                   ),
@@ -207,7 +279,7 @@ Widget ResultCard(from, to, landmark, price, kilometer, type) {
                   //   size: 15.0,
                   // )
                   CircleAvatar(
-                    backgroundColor: Colors.lightGreen,
+                    backgroundColor: verified,
                     radius: 5.0,
                   ),
                 ],
