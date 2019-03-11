@@ -36,7 +36,8 @@ class SearchPanel extends StatefulWidget {
 class _SearchPanelState extends State<SearchPanel> {
   List<GetLocation> list = List();
   var isLoading = false;
-  bool _validate = false;
+  bool fromValidate = false;
+  bool toValidate = false;
   String from = "";
   String to = "";
 
@@ -45,9 +46,14 @@ class _SearchPanelState extends State<SearchPanel> {
 
   _fetchData() async {
     setState(() {
-      from.isEmpty ? _validate = true : _validate = false;
+      from.isEmpty ? fromValidate = true : fromValidate = false;
+      to.isEmpty ? toValidate = true : toValidate = false;
       isLoading = true;
     });
+    if (from.isEmpty || to.isEmpty) {
+      isLoading = false;
+      return false;
+    }
 
     final response = await http.post(
       "https://sharing-point-dev.herokuapp.com/location/getLocationFromTo",
@@ -60,7 +66,6 @@ class _SearchPanelState extends State<SearchPanel> {
       body: ({"from": from, "to": to}),
     );
     if (response.statusCode == 200) {
-      print(response.body);
       list = (json.decode(response.body) as List)
           .map((data) => new GetLocation.fromJson(data))
           .toList();
@@ -68,7 +73,7 @@ class _SearchPanelState extends State<SearchPanel> {
         isLoading = false;
       });
     } else {
-      throw Exception('Failed to load photos');
+      throw Exception('Failed to load data');
     }
   }
 
@@ -77,7 +82,7 @@ class _SearchPanelState extends State<SearchPanel> {
     return Stack(
       children: <Widget>[
         Container(
-          height: 180.0,
+          height: 220.0,
           width: double.infinity,
           color: Colors.yellow,
         ),
@@ -103,7 +108,7 @@ class _SearchPanelState extends State<SearchPanel> {
                     hintText: 'Source',
                     hintStyle:
                         TextStyle(color: Colors.grey, fontFamily: 'Quicksand'),
-                    errorText: _validate ? 'Please Select Source.' : null,
+                    errorText: fromValidate ? 'Please Select Source.' : null,
                   ),
                 ),
               ),
@@ -127,7 +132,7 @@ class _SearchPanelState extends State<SearchPanel> {
                     hintText: 'Destination',
                     hintStyle:
                         TextStyle(color: Colors.grey, fontFamily: 'Quicksand'),
-                    errorText: _validate ? 'Please Select Destination.' : null,
+                    errorText: toValidate ? 'Please Select Destination.' : null,
                   ),
                 ),
               ),
@@ -145,11 +150,22 @@ class _SearchPanelState extends State<SearchPanel> {
                         borderRadius: BorderRadius.circular(30.0))),
               ),
             ),
-            isLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : SearchResultPanel(getLocationResponse: list),
+            SizedBox(height: 50.0),
+            Padding(
+              padding: EdgeInsets.only(left: 0.0, right: 0.0),
+              child: isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).indicatorColor),
+                      ),
+                    )
+                  : list.length > 0
+                      ? SearchResultPanel(getLocationResponse: list)
+                      : Center(
+                          child: Text("No Data Found."),
+                        ),
+            ),
           ],
         ),
       ],
@@ -169,6 +185,7 @@ class SearchResultPanel extends StatelessWidget {
       children: <Widget>[
         ListView.builder(
             shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
             itemCount: getLocationResponse.length,
             itemBuilder: (BuildContext context, int index) {
               return resultCard(
