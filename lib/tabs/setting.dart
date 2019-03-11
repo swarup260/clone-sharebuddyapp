@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:share_buddy/tabs/screens/about_us.dart';
+import 'package:share_buddy/tabs/screens/app_info.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingTab extends StatelessWidget {
   List<Widget> _list = [
     ReceiveNotification(),
-    SettingField(label_name: 'Send Feedback'),
+    SettingField(label_name: 'Send Us Feedback'),
     SettingField(label_name: 'Rate Us'),
-    SettingField(label_name: 'About Us'),
+    SettingField(label_name: 'App info'),
     SettingField(
       label_name: 'Follow Us',
     ),
@@ -105,10 +105,16 @@ class NestedSetting extends StatelessWidget {
                     onCanceled: () {},
                     tooltip: 'User',
                     itemBuilder: (BuildContext context) {
-                      return Choices.choices
+                      return Choices.nonLoggedInChoices
                           .map((String choices) => PopupMenuItem<String>(
                                 value: choices,
-                                child: Text(choices),
+                                child: GestureDetector(
+                                  child: Text(choices),
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .pushReplacementNamed('/$choices');
+                                  },
+                                ),
                               ))
                           .toList();
                     },
@@ -213,7 +219,7 @@ class SettingField extends StatelessWidget {
   Widget build(BuildContext context) {
     Function onTap2 = () {
       switch (label_name) {
-        case 'Send Feedback':
+        case 'Send Us Feedback':
           showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -279,9 +285,9 @@ class SettingField extends StatelessWidget {
                 );
               });
           break;
-        case 'About Us':
+        case 'App info':
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => new AboutUsPage()));
+              MaterialPageRoute(builder: (context) => new AppInfoPage()));
           break;
         case 'Follow Us':
           showDialog(
@@ -362,7 +368,11 @@ class SettingField extends StatelessWidget {
 
 class Choices {
   static const String login = "Login";
-  static const String register = "register";
+  static const String register = "Register";
 
-  static const List<String> choices = [login, register];
+  static const String editAccount = "Edit Account";
+  static const String logOut = "Logout";
+
+  static const List<String> nonLoggedInChoices = [login, register];
+  static const List<String> loggedInChoices = [editAccount, logOut];
 }
