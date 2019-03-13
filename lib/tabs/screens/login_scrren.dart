@@ -3,6 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginScreen extends StatelessWidget {
   final Widget child;
+  IconData icon1 = FontAwesomeIcons.facebook;
+  IconData icon2 = FontAwesomeIcons.googlePlus;
+  Color color1 = Colors.blueAccent;
+  Color color2 = Colors.red;
+  String text1 = 'Facebook';
+  String text2 = 'Google';
 
   LoginScreen({Key key, this.child}) : super(key: key);
 
@@ -17,38 +23,66 @@ class LoginScreen extends StatelessWidget {
             children: <Widget>[
               Text(
                 'ShareBuddy'.toUpperCase(),
-                style: TextStyle(fontSize: 18.0),
+                style: TextStyle(fontSize: 15.0),
               ),
               Icon(
                 FontAwesomeIcons.car,
-                size: 100,
+                size: 80,
               ),
               RegisterForm(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('---------------------OR---------------------'),
+                child: Text(
+                  '----------------- OR SIGN UP WITH -----------------',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Icon(
-                    FontAwesomeIcons.facebook,
-                    size: 50.0,
-                  ),
-                  Icon(
-                    FontAwesomeIcons.google,
-                    size: 50.0,
-                  ),
-                  Icon(
-                    FontAwesomeIcons.twitter,
-                    size: 50.0,
-                  )
+                  new SocialIconButton(text: text1, icon: icon1, color: color1),
+                  new SocialIconButton(text: text2, icon: icon2, color: color2),
                 ],
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class SocialIconButton extends StatelessWidget {
+  const SocialIconButton({
+    Key key,
+    @required this.text,
+    @required this.icon,
+    @required this.color,
+  }) : super(key: key);
+
+  final String text;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 150,
+      height: 50,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text(
+            text,
+            style: TextStyle(color: Colors.white, wordSpacing: 3),
+          ),
+          Icon(
+            icon,
+            size: 30.0,
+          )
+        ],
+      ),
+      color: color,
     );
   }
 }
@@ -74,20 +108,29 @@ class _RegisterFormState extends State<RegisterForm> {
               userValidator, saveUser, userName, 'Email', Icon(Icons.person)),
           FormField(userValidator, savePass, password, 'Password',
               Icon(Icons.phonelink_lock)),
-          // Align(
-          //   child: Padding(
-          //     child: Text(
-          //       'Forgot Password ?',
-          //     ),
-          //     padding: EdgeInsets.symmetric(horizontal: 10.0),
-          //   ),
-          //   alignment: Alignment.topRight,
-          // ),
-          FlatButton(
-            child: Text('Submit'),
-            color: Theme.of(context).primaryColor,
-            onPressed: formSubmit,
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              ButtonTheme(
+                height: 40.0,
+                minWidth: 160.0,
+                child: RaisedButton(
+                  child: Text('Login'),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: formSubmit,
+                ),
+              ),
+              ButtonTheme(
+                height: 40.0,
+                minWidth: 160.0,
+                child: RaisedButton(
+                  child: Text('Register'),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: formSubmit,
+                ),
+              )
+            ],
+          )
         ],
       ),
     );
@@ -130,14 +173,15 @@ class FormField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       child: TextFormField(
         validator: validatorMethod,
         onSaved: saveData,
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(15),
           labelText: hintText,
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10))),
+              borderRadius: BorderRadius.all(Radius.circular(2))),
           // hintText: hintText
         ),
       ),
