@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_buddy/tabs/screens/app_info.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share_buddy/tabs/screens/login_scrren.dart';
 
 class SettingTab extends StatelessWidget {
   List<Widget> _list = [
@@ -77,6 +78,7 @@ class Setting extends StatelessWidget {
 }
 
 class NestedSetting extends StatelessWidget {
+  bool loginFlag = true;
   final List<Widget> _list;
   NestedSetting({
     Key key,
@@ -100,23 +102,15 @@ class NestedSetting extends StatelessWidget {
               ),
               actions: <Widget>[
                 Padding(
-                  child: PopupMenuButton(
-                    child: Icon(Icons.person),
-                    onCanceled: () {},
-                    tooltip: 'User',
-                    itemBuilder: (BuildContext context) {
-                      return Choices.nonLoggedInChoices
-                          .map((String choices) => PopupMenuItem<String>(
-                                value: choices,
-                                child: GestureDetector(
-                                  child: Text(choices),
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .pushReplacementNamed('/$choices');
-                                  },
-                                ),
-                              ))
-                          .toList();
+                  child: IconButton(
+                    icon: loginFlag
+                        ? Icon(FontAwesomeIcons.userPlus)
+                        : Icon(FontAwesomeIcons.userAlt),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
                     },
                   ),
                   padding: EdgeInsets.all(10),
@@ -363,16 +357,3 @@ class SettingField extends StatelessWidget {
 //           )
 //         ],
 //       )
-
-/* choices  */
-
-class Choices {
-  static const String login = "Login";
-  static const String register = "Register";
-
-  static const String editAccount = "Edit Account";
-  static const String logOut = "Logout";
-
-  static const List<String> nonLoggedInChoices = [login, register];
-  static const List<String> loggedInChoices = [editAccount, logOut];
-}
