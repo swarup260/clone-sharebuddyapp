@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/GetLocation.dart';
+import '../networking/networkmanager.dart';
+import '../networking/apimanager.dart';
 
 class ListTab extends StatelessWidget {
   @override
@@ -34,6 +36,10 @@ class SearchPanel extends StatefulWidget {
 }
 
 class _SearchPanelState extends State<SearchPanel> {
+
+  final networkManager = new NetworkManager();
+  final apiManager = new ApiManager();
+
   List<GetLocation> list = List();
   var isLoading = false;
   bool fromValidate = false;
@@ -55,26 +61,38 @@ class _SearchPanelState extends State<SearchPanel> {
       return false;
     }
 
-    final response = await http.post(
-      "https://sharing-point-dev.herokuapp.com/location/getLocationFromTo",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.NykEM4bbRJYDCkP84ExLGhOkqBkDCe-avND2YoHXOFY",
-      },
-      body: ({"from": from, "to": to}),
-    );
-    if (response.statusCode == 200) {
-      list = (json.decode(response.body) as List)
+    // final response = await http.post(
+    //   "https://sharing-point-dev.herokuapp.com/location/getLocationFromTo",
+    //   headers: {
+    //     "Accept": "application/json",
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //     "Authorization":
+    //         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.NykEM4bbRJYDCkP84ExLGhOkqBkDCe-avND2YoHXOFY",
+    //   },
+    //   body: ({"from": from, "to": to}),
+    // );
+
+    final params = ({"from": from, "to": to});
+    final getLocationResults  = networkManager.postRequest(apiManager.getLocationFromTo, params) as List<dynamic>;
+
+      
+    list = (getLocationResults)
           .map((data) => new GetLocation.fromJson(data))
           .toList();
       setState(() {
         isLoading = false;
       });
-    } else {
-      throw Exception('Failed to load data');
-    }
+
+    // if (response.statusCode == 200) {
+    //   list = (json.decode(response.body) as List)
+    //       .map((data) => new GetLocation.fromJson(data))
+    //       .toList();
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // } else {
+    //   throw Exception('Failed to load data');
+    // }
   }
 
   @override
