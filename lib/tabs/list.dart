@@ -73,15 +73,20 @@ class _SearchPanelState extends State<SearchPanel> {
     // );
 
     final params = ({"from": from, "to": to});
-    final getLocationResults  = networkManager.postRequest(apiManager.getLocationFromTo, params) as List<dynamic>;
-
-      
-    list = (getLocationResults)
-          .map((data) => new GetLocation.fromJson(data))
-          .toList();
-      setState(() {
-        isLoading = false;
-      });
+    final getLocationResults  = networkManager.postRequest(apiManager.getLocationFromTo, params).then(
+      (res) => 
+      ).catchError((onError) => print(onError)
+      );
+    if (getLocationResults != null) {
+      print(getLocationResults);
+          // list = (getLocationResults as List)
+          //       .map((data) => new GetLocation.fromJson(data))
+          //       .toList();
+          //   setState(() {
+          //     isLoading = false;
+          //   });
+    }
+    
 
     // if (response.statusCode == 200) {
     //   list = (json.decode(response.body) as List)

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,8 +18,9 @@ class NetworkManager {
   Future<dynamic> postRequest(String requestUrl,dynamic params) async {
 
     final response = await http.post(requestUrl, headers: headers, body: params);
-    
     if (response.statusCode == 200) {
+          //print(response.body);
+
       return json.decode(response.body);
     } else {
       throw Exception('Failed to load data');
