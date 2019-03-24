@@ -1,359 +1,159 @@
 import 'package:flutter/material.dart';
-import 'package:share_buddy/tabs/screens/app_info.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:share_buddy/tabs/screens/login_scrren.dart';
 
-class SettingTab extends StatelessWidget {
-  List<Widget> _list = [
-    ReceiveNotification(),
-    SettingField(label_name: 'Send Us Feedback'),
-    SettingField(label_name: 'Rate Us'),
-    SettingField(label_name: 'App info'),
-    SettingField(
-      label_name: 'Follow Us',
-    ),
-    Share()
-  ];
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedSetting(list: _list),
-    );
-  }
+class SettingTab extends StatefulWidget {
+  final Widget child;
+
+  SettingTab({Key key, this.child}) : super(key: key);
+
+  _SettingTabState createState() => _SettingTabState();
 }
 
-class Setting extends StatelessWidget {
-  const Setting({
-    Key key,
-    @required List<String> list,
-  })  : _list = list,
-        super(key: key);
+class _SettingTabState extends State<SettingTab> {
+  Map<String, Icon> settingIcon = {
+    'Recieve Notification': Icon(Icons.notifications),
+    'Login': Icon(FontAwesomeIcons.userAlt)
+  };
+  Map<String, Icon> settingAboutUsIcon = {
+    'Send Us Feedback': Icon(Icons.feedback),
+    'App Info': Icon(Icons.info),
+    'About Us': Icon(FontAwesomeIcons.infoCircle),
+    'Help Us': Icon(FontAwesomeIcons.handsHelping),
+    'Rate Us': Icon(Icons.rate_review)
+  };
 
-  final List<String> _list;
-
+  List monthsOfTheYear = [
+    'Jan',
+    'Feb',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+  FixedExtentScrollController fixedExtentScrollController =
+      new FixedExtentScrollController();
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          pinned: true,
-          snap: false,
-          floating: true,
-          expandedHeight: 300.0,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Align(
+    return ListWheelScrollView(
+      controller: fixedExtentScrollController,
+      physics: FixedExtentScrollPhysics(),
+      children: monthsOfTheYear.map((month) {
+        return Card(
+            child: Row(
+          children: <Widget>[
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                'Anonymous',
-                style: TextStyle(letterSpacing: 1),
+                month,
+                style: TextStyle(fontSize: 18.0),
               ),
-              alignment: Alignment.bottomLeft,
+            )),
+          ],
+        ));
+      }).toList(),
+      itemExtent: 60.0,
+    );
+  }
+
+  Center buildCenter() {
+    return Center(
+      child: Padding(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              child: Icon(
+                FontAwesomeIcons.user,
+                size: 50,
+              ),
             ),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.person),
-              tooltip: 'User',
-              onPressed: () {},
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'HELLO USER',
+                style: TextStyle(fontSize: 15.0),
+              ),
+            ),
+            Flexible(
+              child: Card(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: settingIcon.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildContainer(settingIcon, index);
+                  },
+                ),
+                elevation: 4.0,
+              ),
+            ),
+            Flexible(
+              child: Card(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: settingAboutUsIcon.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildContainer(settingAboutUsIcon, index);
+                  },
+                ),
+                elevation: 4.0,
+              ),
             )
           ],
         ),
-        SliverFixedExtentList(
-          itemExtent: 50.0,
-          delegate:
-              SliverChildBuilderDelegate((BuildContext context, int index) {
-            return Padding(
-              child: Container(
-                child: Text(
-                  _list[index],
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-              padding: EdgeInsets.all(10),
-            );
-          }, childCount: 5),
-        ),
-      ],
-    );
-  }
-}
-
-class NestedSetting extends StatelessWidget {
-  bool loginFlag = true;
-  final List<Widget> _list;
-  NestedSetting({
-    Key key,
-    @required List<Widget> list,
-  })  : _list = list,
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              expandedHeight: 250,
-              floating: false,
-              pinned: true,
-              snap: false,
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: EdgeInsets.all(10),
-                title: Text('Anonymous'),
-              ),
-              actions: <Widget>[
-                Padding(
-                  child: IconButton(
-                    icon: loginFlag
-                        ? Icon(FontAwesomeIcons.userPlus)
-                        : Icon(FontAwesomeIcons.userAlt),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                    },
-                  ),
-                  padding: EdgeInsets.all(10),
-                ),
-              ],
-            )
-          ];
-        },
-        body: ConstrainedBox(
-          constraints: BoxConstraints.expand(),
-          child: ListView.builder(
-            itemCount: _list.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _list[index];
-            },
-          ),
-        ));
-  }
-}
-
-class ReceiveNotification extends StatefulWidget {
-  final Widget child;
-
-  ReceiveNotification({Key key, this.child}) : super(key: key);
-
-  _ReceiveNotificationState createState() => _ReceiveNotificationState();
-}
-
-class _ReceiveNotificationState extends State<ReceiveNotification> {
-  @override
-  bool enabled = false;
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Flexible(
-          child: Padding(
-            child: Text(
-              'Receive Notification',
-              style: TextStyle(fontSize: 18),
-            ),
-            padding: EdgeInsets.all(10),
-          ),
-        ),
-        Flexible(
-          child: Switch(
-            value: enabled,
-            onChanged: (bool enabled) {
-              setState(() {
-                enabled = true;
-              });
-            },
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class Share extends StatelessWidget {
-  final Widget child;
-
-  Share({Key key, this.child}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Flexible(
-          child: Padding(
-            child: Text(
-              'Share',
-              style: TextStyle(fontSize: 18),
-            ),
-            padding: EdgeInsets.all(10),
-          ),
-        ),
-        Flexible(
-          child: GestureDetector(
-            child: Padding(
-              child: Icon(Icons.share),
-              padding: EdgeInsets.all(10),
-            ),
-            onTap: () {},
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class SettingField extends StatelessWidget {
-  final String label_name;
-  SettingField({Key key, @required String label_name})
-      : label_name = label_name,
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Function onTap2 = () {
-      switch (label_name) {
-        case 'Send Us Feedback':
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  content: Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(1))),
-
-                            // hintText: hintText
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.multiline,
-                          maxLength: 100,
-                          decoration: InputDecoration(
-                            labelText: 'FeedBack',
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(1))),
-
-                            // hintText: hintText
-                          ),
-                        ),
-                      ],
-                    ),
-                    height: 150,
-                  ),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Icon(Icons.send),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                );
-              });
-          break;
-        case 'Rate Us':
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  content: Icon(Icons.star),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Icon(Icons.check_circle),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                );
-              });
-          break;
-        case 'App info':
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => new AppInfoPage()));
-          break;
-        case 'Follow Us':
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  content: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Icon(
-                        FontAwesomeIcons.facebook,
-                        size: 40,
-                        color: Colors.blue,
-                      ),
-                      Icon(
-                        FontAwesomeIcons.twitter,
-                        size: 40,
-                        color: Colors.lightBlue,
-                      ),
-                      Icon(
-                        FontAwesomeIcons.google,
-                        size: 40,
-                        color: Colors.red,
-                      ),
-                      Icon(
-                        FontAwesomeIcons.instagram,
-                        size: 40,
-                        color: Colors.pink,
-                      )
-                    ],
-                  ),
-                );
-              });
-          break;
-        default:
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text('tap working'),
-          ));
-      }
-    };
-    return GestureDetector(
-      child: Padding(
-        child: Container(
-          child: Text(
-            label_name,
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.symmetric(vertical: 30.0),
       ),
-      onTap: onTap2,
     );
+  }
+
+  Container buildContainer(Map map, int index) {
+    return Container(
+        child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: map.values.toList()[index],
+        ),
+        Expanded(
+          child: InkWell(
+            child: Padding(
+              child: Text(
+                map.keys.toList()[index],
+                style: TextStyle(fontSize: 15.0),
+              ),
+              padding: EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 15.0),
+            ),
+            onTap: () {
+              print('object');
+            },
+          ),
+          flex: 2,
+        ),
+      ],
+    ));
   }
 }
 
-// Row(
-//         crossAxisAlignment: CrossAxisAlignment.stretch,
-//         children: <Widget>[
-//           Container(
-//             child: Text(
-//               'Receive Notification',
-//               style: TextStyle(fontSize: 20),
-//             ),
-//             height: 30,
-//           ),
-//           Switch(
-//             value: enabled,
-//             onChanged: (bool enabled) {
-//               setState(() {
-//                 enabled = true;
-//               });
-//             },
-//           )
-//         ],
-//       )
+/* 
+
+InkWell(
+          child: Padding(
+            child: Text(
+              setting[index],
+              style: TextStyle(fontSize: 15.0),
+            ),
+            padding: EdgeInsets.all(10),
+          ),
+          onTap: () {
+            print('object');
+          },
+        )
+
+ */
