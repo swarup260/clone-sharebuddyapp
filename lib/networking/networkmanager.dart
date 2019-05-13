@@ -1,48 +1,58 @@
-import 'dart:convert';
 import 'dart:async';
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:http/src/response.dart';
+import 'package:share_buddy/models/getToken.dart';
 
 class NetworkManager {
-  final headers = {
-    "Accept": "application/json",
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Authorization":
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.NykEM4bbRJYDCkP84ExLGhOkqBkDCe-avND2YoHXOFY",
+  String _url;
+  String _token = "";
+  NetworkManager({String url = "sharebuddy-api.herokuapp.com"}) {
+    this._url = url;
+  }
+  /* List of Api Endpoint */
+  final Map<String, String> _apiEndpoint = {
+    "getAllLocation": "/location/getAllLocation",
+    "getLocationFromTo": "/location/getLocationFromTo",
+    "getLocationList": "/location/getLocationList",
+    "getLocationList": "/location/getLocationList",
+    "getLocationFromCurrent": "/location/getLocationFromCurrent",
+    "register": "/user/register",
+    "getToken": "/user/getToken",
+    "addFeedback": "/user/addFeedback"
   };
 
-  Future<dynamic> postRequest(String requestUrl, dynamic params) async {
-    final http.Response response =
-        await http.post(requestUrl, headers: headers, body: jsonEncode(params));
-    /* final http.Response response =
-        await http.post(requestUrl, headers: headers, body: params); */
-    if (response.statusCode == 200) {
-      print(json.decode(response.body));
+  get apiEndpoint => _apiEndpoint;
 
-      return json.decode(response.body);
+  ///Map the url with Domain
+  /*  Map<String, String> allEndpoint() =>
+      _apiEndpoint.map((key, value) => MapEntry(key, _url + value)); */
+
+  Future<GetToken> _requestToken(String deviceID) async {
+    Uri urlEndpoint =
+        Uri.http(_url, _apiEndpoint["getToken"], {"deviceId": deviceID});
+    final http.Response response = await http.get(urlEndpoint);
+    if (response.statusCode == 200) {
+      return getTokenFromJson(response.body);
     } else {
-      throw Exception('Failed to load data');
+      throw Exception('Error While Generating Token');
     }
   }
 
-  /* 
-    example
-  Future<dynamic> getRequest =
-      networkManager.getRequest(apiManager.getAllLocation);
-  getRequest
-      .then((value) => print(value))
-      .catchError((onError) => print(onError)); */
-
-  Future<dynamic> getRequest(String requestUrl) async {
-    final http.Response response =
-        await http.get(Uri.encodeFull(requestUrl), headers: headers);
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
+  String getToken(String deviceID) {
+    if (_token != "") {
+      return _token;
     } else {
-      throw Exception('Failed to load data');
+      _requestToken(deviceID).then((GetToken value) {
+        if (value.status) {
+          _token = value.data;
+        }
+      }).catchError((error) => error);
+      return _token;
     }
   }
+
+  Future<dynamic> getRequest(String requestUrl, apiModel,
+      {bool authFlag = true}) async {}
+  Future<dynamic> postRequest(String requestUrl, apiModel,
+      {bool authFlag = true}) async {}
 }
