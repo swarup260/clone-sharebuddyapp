@@ -20,10 +20,10 @@ class GetLocation {
   bool status;
   bool verified;
   String id;
-  int code;
+  String code;
   String name;
   String landmark;
-  List<double> location;
+  List<String> location;
   String from;
   String to;
   String price;
@@ -63,7 +63,7 @@ class GetLocation {
         name: json["name"],
         landmark: json["landmark"],
         location:
-            new List<double>.from(json["location"].map((x) => x.toDouble())),
+            new List<String>.from(json["location"].map((x) => x)),
         from: json["from"],
         to: json["to"],
         price: json["price"],

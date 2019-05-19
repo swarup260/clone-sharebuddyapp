@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 
 import '../models/GetLocation.dart';
+import '../models/networkManager.dart';
 
 class ListTab extends StatelessWidget {
   @override
@@ -54,17 +54,10 @@ class _SearchPanelState extends State<SearchPanel> {
       isLoading = false;
       return false;
     }
+    Map<String, dynamic> myObject = {'from': from, 'to': to} ;
 
-    final response = await http.post(
-      "https://sharing-point-dev.herokuapp.com/location/getLocationFromTo",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.NykEM4bbRJYDCkP84ExLGhOkqBkDCe-avND2YoHXOFY",
-      },
-      body: ({"from": from, "to": to}),
-    );
+    final response = await ajaxPost('location/getLocationFromTo',myObject);
+
     if (response.statusCode == 200) {
       list = (json.decode(response.body) as List)
           .map((data) => new GetLocation.fromJson(data))
