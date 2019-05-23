@@ -1,7 +1,7 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_buddy/models/apiEndpoint.dart';
 
 import '../models/GetLocation.dart';
 import '../models/networkManager.dart';
@@ -54,14 +54,14 @@ class _SearchPanelState extends State<SearchPanel> {
       isLoading = false;
       return false;
     }
-    Map<String, dynamic> myObject = {'from': from, 'to': to} ;
+    Map<String, dynamic> myObject = {'from': from, 'to': to};
 
-    final response = await ajaxPost('location/getLocationFromTo',myObject);
+    final response =
+        await ajaxPost(getApiEndpoint(endpoint.getLocationFromTo), myObject);
+    // final response = await ajaxPost(getApiEndpoint('getLocationFromTo'), myObject);
 
-    if (response.statusCode == 200) {
-      list = (json.decode(response.body) as List)
-          .map((data) => new GetLocation.fromJson(data))
-          .toList();
+    if (response != null) {
+      list = getLocationFromJson(response);
       setState(() {
         isLoading = false;
       });

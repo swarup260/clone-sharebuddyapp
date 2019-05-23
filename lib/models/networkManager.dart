@@ -6,9 +6,9 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
+import 'package:share_buddy/models/apiEndpoint.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 
 // the unique ID of the application
 const String _applicationId = "ShareBuddy";
@@ -17,7 +17,7 @@ const String _applicationId = "ShareBuddy";
 const String _storageKeyMobileToken = "";
 
 // the URL of the Web Server
-const String _urlBase = "http://sharebuddy-api.herokuapp.com";
+String _urlBase = getBaseurl();
 
 // the URI to the Web Server Web API
 //const String _serverApi = "/api/mobile/";
@@ -87,21 +87,21 @@ Future<bool> _setMobileToken(String token) async {
 Future<dynamic> handShake() async {
   bool _status = false;
   // Check Token Set or Not
-  if(await _getMobileToken() == "")
-  {
-    final response = await ajaxGet('user/getToken?deviceId=123');
+  if (await _getMobileToken() == "") {
+    Map<String, String> query = {"deviceId": "123"};
+    final response =
+        await ajaxGet(getApiEndpoint(endpoint.getToken), query: query);
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       _status = responseBody["status"];
-      switch(_status)
-      {
+      switch (_status) {
         case true:
-        await _setMobileToken(responseBody["data"]);
-        break;
+          await _setMobileToken(responseBody["data"]);
+          break;
 
         case false:
-        await _setMobileToken("");
-        break;
+          await _setMobileToken("");
+          break;
       }
     }
     return response;
@@ -111,14 +111,14 @@ Future<dynamic> handShake() async {
 /// ----------------------------------------------------------
 /// Http "GET" request
 /// ----------------------------------------------------------
-Future<dynamic> ajaxGet(String serviceName) async {
+Future<dynamic> ajaxGet(String serviceName, {Map query = null}) async {
   try {
-    final response = await http.get(_urlBase + '/$serviceName',
-        headers: {
-          'X-DEVICE-ID': await _getDeviceIdentity(),
-          'X-TOKEN': await _getMobileToken(),
-          'X-APP-ID': _applicationId
-        });
+    final response =
+        await http.get(Uri.http(_urlBase, serviceName, query), headers: {
+      'X-DEVICE-ID': await _getDeviceIdentity(),
+      'X-TOKEN': await _getMobileToken(),
+      'X-APP-ID': _applicationId
+    });
     return response;
   } catch (e) {
     // An error was received
@@ -132,7 +132,7 @@ Future<dynamic> ajaxGet(String serviceName) async {
 Future<dynamic> ajaxPost(String serviceName, Map data) async {
   try {
     await handShake();
-    final response = await http.post(_urlBase + '/$serviceName',
+    final response = await http.post(Uri.http(_urlBase, serviceName),
         body: json.encode(data),
         headers: {
           'X-DEVICE-ID': await _getDeviceIdentity(),
@@ -140,7 +140,9 @@ Future<dynamic> ajaxPost(String serviceName, Map data) async {
           'X-APP-ID': _applicationId,
           'Content-Type': 'application/json; charset=utf-8',
         });
-      return response;
+    if (response.statusCode == 200) {
+      return response.body;
+    }
   } catch (e) {
     // An error was received
     throw new Exception("POST AJAX ERROR");
