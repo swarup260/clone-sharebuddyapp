@@ -182,12 +182,12 @@ class SearchResultPanel extends StatelessWidget {
             itemCount: getLocationResponse.length,
             itemBuilder: (BuildContext context, int index) {
               return resultCard(
-                getLocationResponse[index].from,
-                getLocationResponse[index].to,
-                getLocationResponse[index].landmark,
+                getLocationResponse[index].from.toUpperCase(),
+                getLocationResponse[index].to.toUpperCase(),
+                getLocationResponse[index].landmark.toUpperCase(),
                 getLocationResponse[index].price,
                 getLocationResponse[index].kilometer + " KM",
-                getLocationResponse[index].type == "Auto"
+                getLocationResponse[index].type == "auto"
                     ? 'assets/images/auto.png'
                     : 'assets/images/taxi.png',
                 getLocationResponse[index].verified
