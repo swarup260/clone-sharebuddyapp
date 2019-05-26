@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import '../models/GetLocation.dart';
+import '../models/GetLocationList.dart';
 import '../api/networkManager.dart';
 import '../api/apiEndpoint.dart';
 
@@ -34,38 +35,54 @@ class SearchPanel extends StatefulWidget {
 }
 
 class _SearchPanelState extends State<SearchPanel> {
-  List<GetLocation> list = List();
+  List<GetLocation> locationList = List();
+  List locationNameList = List();
+
   var isLoading = false;
-  bool fromValidate = false;
-  bool toValidate = false;
+  var isSearch = false;
+
   String from = "";
   String to = "";
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController fromController = new TextEditingController();
   final TextEditingController toController = new TextEditingController();
 
+  // Fetch data from api
   _fetchData() async {
-    setState(() {
-      from.isEmpty ? fromValidate = true : fromValidate = false;
-      to.isEmpty ? toValidate = true : toValidate = false;
-      isLoading = true;
-    });
-    if (from.isEmpty || to.isEmpty) {
-      isLoading = false;
+
+    if (this._formKey.currentState.validate()) {
+      this._formKey.currentState.save();
+    } else {
       return false;
     }
-    Map<String, dynamic> myObject = {'from': from, 'to': to};
 
+
+    setState(() {
+      isLoading = true;
+      isSearch = true;
+    });
+
+    Map<String, dynamic> myObject = {'from': from, 'to': to};
     final response =
         await ajaxPost(getApiEndpoint(endpoint.getLocationFromTo), myObject);
-    // final response = await ajaxPost(getApiEndpoint('getLocationFromTo'), myObject);
 
     if (response != null) {
-      list = getLocationFromJson(response);
+      locationList = getLocationFromJson(response);
       setState(() {
         isLoading = false;
+        if(locationList.length > 0)
+        {
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Total Number of Results: ${locationList.length}', textAlign: TextAlign.center)));
+        }
+        else
+        {
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('No Direct Route Found.', textAlign: TextAlign.center)));
+        }
       });
     } else {
+      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to load data',textAlign: TextAlign.center)));
       throw Exception('Failed to load data');
     }
   }
@@ -74,76 +91,152 @@ class _SearchPanelState extends State<SearchPanel> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Container(
-          height: 220.0,
-          width: double.infinity,
-          color: Colors.yellow,
-        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 15.0),
-            Padding(
-              padding: EdgeInsets.only(left: 15.0, right: 15.0),
-              child: Material(
-                elevation: 5.0,
-                borderRadius: BorderRadius.circular(20.0),
-                child: TextField(
-                  controller: fromController,
-                  onChanged: (String text) {
-                    from = text;
-                  },
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.my_location,
-                        color: Colors.black, size: 30.0),
-                    contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                    hintText: 'Source',
-                    hintStyle:
-                        TextStyle(color: Colors.grey, fontFamily: 'Quicksand'),
-                    errorText: fromValidate ? 'Please Select Source.' : null,
+            Container(
+              color: Theme.of(context).primaryColor,
+              child: Form(
+                key: this._formKey,
+                child: Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: Column(
+                    children: <Widget>[
+                      // Source TextBox
+                      TypeAheadFormField(
+                        textFieldConfiguration: TextFieldConfiguration(
+                          controller: this.fromController,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            filled: true,
+                            prefixIcon: Icon(Icons.my_location,
+                                color: Colors.black, size: 25.0),
+                            contentPadding:
+                                EdgeInsets.only(left: 15.0, top: 15.0),
+                            hintText: 'Source',
+                            hintStyle: TextStyle(
+                                color: Colors.grey, fontFamily: 'Quicksand'),
+                          ),
+                        ),
+                        suggestionsCallback: (pattern) async {
+                          if (pattern.length > 2) {
+                            Map<String, dynamic> myObject = {
+                              'key': 'from',
+                              'search': pattern
+                            };
+
+                            final response = await ajaxPost(
+                                getApiEndpoint(endpoint.getLocationList),
+                                myObject);
+                            locationNameList =
+                                getLocationListFromJson(response);
+                            return locationNameList;
+                          }
+                        },
+                        itemBuilder: (context, suggestion) {
+                          return ListTile(
+                            title: Text(suggestion),
+                          );
+                        },
+                        transitionBuilder:
+                            (context, suggestionsBox, controller) {
+                          return suggestionsBox;
+                        },
+                        onSuggestionSelected: (suggestion) {
+                          this.fromController.text = suggestion;
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please Select Source';
+                          }
+                        },
+                        onSaved: (value) => this.from = value,
+                      ),
+
+                      SizedBox(height: 5.0),
+
+                      //Destination TextBox
+                      TypeAheadFormField(
+                        textFieldConfiguration: TextFieldConfiguration(
+                          controller: this.toController,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            filled: true,
+                            prefixIcon: Icon(Icons.place,
+                                color: Colors.black, size: 25.0),
+                            contentPadding:
+                                EdgeInsets.only(left: 15.0, top: 15.0),
+                            hintText: 'Destination',
+                            hintStyle: TextStyle(
+                                color: Colors.grey, fontFamily: 'Quicksand'),
+                          ),
+                        ),
+                        suggestionsCallback: (pattern) async {
+                          if (pattern.length > 2) {
+                            Map<String, dynamic> myObject = {
+                              'key': 'to',
+                              'search': pattern
+                            };
+
+                            final response = await ajaxPost(
+                                getApiEndpoint(endpoint.getLocationList),
+                                myObject);
+                            locationNameList =
+                                getLocationListFromJson(response);
+                            return locationNameList;
+                          }
+                        },
+                        itemBuilder: (context, suggestion) {
+                          return ListTile(
+                            title: Text(suggestion),
+                          );
+                        },
+                        transitionBuilder:
+                            (context, suggestionsBox, controller) {
+                          return suggestionsBox;
+                        },
+                        onSuggestionSelected: (suggestion) {
+                          this.toController.text = suggestion;
+                        },
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please Select Destination';
+                          }
+                        },
+                        onSaved: (value) => this.to = value,
+                      ),
+
+                      SizedBox(height: 10.0),
+
+                      //Search Button
+                      RaisedButton(
+                          textColor: Colors.white,
+                          color: Colors.black,
+                          child: Text("Search"),
+                          onPressed: _fetchData,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0)))
+                    ],
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 5.0),
-            Padding(
-              padding: EdgeInsets.only(left: 15.0, right: 15.0),
-              child: Material(
-                elevation: 5.0,
-                borderRadius: BorderRadius.circular(20.0),
-                child: TextField(
-                  controller: toController,
-                  onChanged: (String text) {
-                    to = text;
-                  },
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    prefixIcon:
-                        Icon(Icons.place, color: Colors.black, size: 30.0),
-                    contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                    hintText: 'Destination',
-                    hintStyle:
-                        TextStyle(color: Colors.grey, fontFamily: 'Quicksand'),
-                    errorText: toValidate ? 'Please Select Destination.' : null,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Padding(
-              padding: EdgeInsets.only(left: 0.0, right: 0.0),
-              child: Center(
-                child: RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.black,
-                    child: Text("Search"),
-                    onPressed: _fetchData,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0))),
-              ),
-            ),
-            SizedBox(height: 50.0),
             Padding(
               padding: EdgeInsets.only(left: 0.0, right: 0.0),
               child: isLoading
@@ -153,16 +246,36 @@ class _SearchPanelState extends State<SearchPanel> {
                             Theme.of(context).indicatorColor),
                       ),
                     )
-                  : list.length > 0
-                      ? SearchResultPanel(getLocationResponse: list)
-                      : Center(
-                          child: Text("No Data Found."),
-                        ),
+                  : _checkLocationListData(locationList)
             ),
           ],
         ),
       ],
     );
+  }
+
+  Widget _checkLocationListData(locationList)
+  {
+    if(locationList.length > 0)
+    {
+      return SearchResultPanel(getLocationResponse: locationList);
+    }
+    else
+    {
+      if(isSearch)
+      {
+        return Center(child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+          Icon(Icons.not_listed_location, size: 30.0,),
+          Text("No Direct Route Found.")
+        ],),);
+      }
+      else
+      {
+          //Adsense Code
+      }
+    }
   }
 }
 
