@@ -6,9 +6,10 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
-import 'package:share_buddy/models/apiEndpoint.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
+import 'apiEndpoint.dart';
 
 // the unique ID of the application
 const String _applicationId = "ShareBuddy";

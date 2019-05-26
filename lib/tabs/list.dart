@@ -1,10 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_buddy/models/apiEndpoint.dart';
 
 import '../models/GetLocation.dart';
-import '../models/networkManager.dart';
+import '../api/networkManager.dart';
+import '../api/apiEndpoint.dart';
 
 class ListTab extends StatelessWidget {
   @override
