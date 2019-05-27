@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../tabs/screens/term_privacy_info.dart';
 import '../tabs/screens/about_us.dart';
 import 'package:share/share.dart';
 
 class SettingTab extends StatelessWidget {
-  final Widget child;
+  SettingTab({Key key}) : super(key: key);
 
-  SettingTab({Key key, this.child}) : super(key: key);
-  List<String> settingTab = [
-    "Receive Notification",
-    "Share",
-    "Feedback",
-    "Term & Privacy Info.",
-    "About Us"
-  ];
-
-  List<IconData> icons = [
-    Icons.notifications,
-    Icons.share,
-    Icons.feedback,
-    Icons.info,
-    FontAwesomeIcons.info
-  ];
   @override
   Widget build(BuildContext context) {
     double deviceHeight = MediaQuery.of(context).size.height;
@@ -29,77 +14,44 @@ class SettingTab extends StatelessWidget {
       body: Column(
         children: <Widget>[
           /* AppBar */
-          customAppBar(deviceHeight, context),
+          new CustomAppBar(deviceHeight: deviceHeight, context: context),
           /* body */
           Flexible(
             child: ListView(
               children: <Widget>[
-                MeunTab(icons: icons[0], settingTab: settingTab[0]),
+                ReceiveNotification(
+                    icons: Icons.notifications,
+                    settingTab: "Receive Notification"),
                 MeunTab(
-                  icons: icons[1],
-                  settingTab: settingTab[1],
+                  icons: Icons.share,
+                  settingTab: "Share",
                   callback: () {
                     Share.share('Check the our app Sharebuddy');
                   },
                 ),
                 MeunTab(
-                  icons: icons[2],
-                  settingTab: settingTab[2],
+                  icons: Icons.feedback,
+                  settingTab: "Feedback",
                   callback: () {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return AlertDialog(
-                            content: Container(
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  TextFormField(
-                                    decoration: InputDecoration(
-                                      labelText: 'Email',
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(1))),
-
-                                      // hintText: hintText
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  TextFormField(
-                                    keyboardType: TextInputType.multiline,
-                                    maxLength: 100,
-                                    decoration: InputDecoration(
-                                      labelText: 'FeedBack',
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(1))),
-
-                                      // hintText: hintText
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              height: 150,
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Icon(Icons.send),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                            ],
-                          );
+                          return new SendFeedback(context: context);
                         });
                   },
                 ),
-                MeunTab(icons: icons[3], settingTab: settingTab[3]),
                 MeunTab(
-                  icons: icons[4],
-                  settingTab: settingTab[4],
+                    icons: Icons.info,
+                    settingTab: "Term & Privacy Info.",
+                    callback: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => new TermPrivacyTab()));
+                    }),
+                MeunTab(
+                  icons: FontAwesomeIcons.info,
+                  settingTab: "About Us",
                   callback: () {
                     Navigator.push(
                         context,
@@ -114,16 +66,70 @@ class SettingTab extends StatelessWidget {
       ),
     );
   }
+}
 
-/*   List<Widget> listViewChildren( List<IconData> icons, List<String> settingName, Widget meun){
-    List<Widget> menuTab = [];
-    for (var i = 0; i < icons.length; i++) {
-      menuTab.add( Me  )
-    }
+/* Send Feeback */
+class SendFeedback extends StatefulWidget {
+  const SendFeedback({
+    Key key,
+    @required this.context,
+  }) : super(key: key);
 
-  } */
+  final BuildContext context;
 
-  Container customAppBar(double deviceHeight, BuildContext context) {
+  @override
+  _SendFeedbackState createState() => _SendFeedbackState();
+}
+
+class _SendFeedbackState extends State<SendFeedback> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLength: 500,
+              decoration: InputDecoration(
+                labelText: 'FeedBack',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(1))),
+
+                // hintText: hintText
+              ),
+            ),
+          ],
+        ),
+        height: 200,
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Icon(Icons.send),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    );
+  }
+}
+
+
+/* Setting Tab */
+class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({
+    Key key,
+    @required this.deviceHeight,
+    @required this.context,
+  }) : super(key: key);
+
+  final double deviceHeight;
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: deviceHeight / 2 * 0.4,
       decoration: new BoxDecoration(color: Theme.of(context).primaryColor),
@@ -143,6 +149,7 @@ class SettingTab extends StatelessWidget {
   }
 }
 
+/* MeunTab Setting Tab */
 class MeunTab extends StatelessWidget {
   const MeunTab(
       {Key key, @required this.icons, @required this.settingTab, this.callback})
@@ -174,39 +181,63 @@ class MeunTab extends StatelessWidget {
     );
   }
 }
-/*
 
-flexibleSpace: FlexibleSpaceBar(
-              title: Align(
-                child: Text(
-                  "Anonymous",
-                  style: TextStyle(fontSize: 15.0),
-                ),
-                alignment: Alignment.bottomLeft,
+/* ReceiveNotification Widgets */
+class ReceiveNotification extends StatefulWidget {
+  const ReceiveNotification(
+      {Key key, @required this.icons, @required this.settingTab});
+
+  final IconData icons;
+  final String settingTab;
+
+  @override
+  _ReceiveNotificationState createState() => _ReceiveNotificationState();
+}
+
+class _ReceiveNotificationState extends State<ReceiveNotification> {
+  bool enabled = false;
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Icon(widget.icons),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(widget.settingTab),
+                  )
+                ],
               ),
-            )
-
-
-
-body: CustomScrollView(
-        slivers: <Widget>[
-          const SliverAppBar(
-            pinned: true,
-            expandedHeight: 80.0,
-            title: Text("Anonymous"),
+              Flexible(
+                child: Switch(
+                  value: enabled,
+                  onChanged: (bool enabled) {
+                    setState(() {
+                      enabled = true;
+                    });
+                  },
+                ),
+              )
+            ],
           ),
-          SliverFixedExtentList(
-            itemExtent: 50.0,
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Container(
-                  alignment: Alignment.center,
-                  color: Colors.lightBlue[100 * (index % 9)],
-                  child: Text('list item $index'),
-                );
-              },
-            ),
-          ),
-        ],
-      )
-*/
+        ),
+        onTap: () {
+          setState(() {
+            if (enabled) {
+              enabled = false;
+            } else {
+              enabled = true;
+            }
+          });
+        },
+      ),
+    );
+  }
+}
