@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share_buddy/models/getMessage.dart';
+import '../api/apiEndpoint.dart';
+import '../api/networkManager.dart';
 import '../tabs/screens/term_privacy_info.dart';
 import '../tabs/screens/about_us.dart';
 import 'package:share/share.dart';
 
 class SettingTab extends StatelessWidget {
   SettingTab({Key key}) : super(key: key);
-
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     double deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
+      key: _scaffoldKey,
       body: Column(
         children: <Widget>[
           /* AppBar */
@@ -36,7 +40,10 @@ class SettingTab extends StatelessWidget {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return new SendFeedback(context: context);
+                          return new SendFeedback(
+                            context: context,
+                            globalKey: _scaffoldKey,
+                          );
                         });
                   },
                 ),
@@ -70,52 +77,71 @@ class SettingTab extends StatelessWidget {
 
 /* Send Feeback */
 class SendFeedback extends StatefulWidget {
-  const SendFeedback({
-    Key key,
-    @required this.context,
-  }) : super(key: key);
+  const SendFeedback({Key key, @required this.context, this.globalKey})
+      : super(key: key);
 
   final BuildContext context;
+  final GlobalKey<ScaffoldState> globalKey;
 
   @override
   _SendFeedbackState createState() => _SendFeedbackState();
 }
 
 class _SendFeedbackState extends State<SendFeedback> {
-  @override
+  final _formKey = GlobalKey<FormState>();
+  String inputFeedback = "";
+  String message = "";
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            TextFormField(
-              keyboardType: TextInputType.multiline,
-              maxLength: 500,
-              decoration: InputDecoration(
-                labelText: 'FeedBack',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(1))),
-
-                // hintText: hintText
-              ),
-            ),
-          ],
+      content: Form(
+        key: _formKey,
+        child: TextFormField(
+          maxLines: 6,
+          decoration: InputDecoration(
+              hintText: "Please Give Us Suggestion to Improve",
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(3)))),
+          validator: (value) {
+            if (value.isEmpty) {
+              return "Please enter some text";
+            }
+            inputFeedback = value;
+          },
         ),
-        height: 200,
       ),
       actions: <Widget>[
         FlatButton(
           child: Icon(Icons.send),
-          onPressed: () {
-            Navigator.of(context).pop();
+          onPressed: () async {
+            if (_formKey.currentState.validate()) {
+              /* post Data to Server */
+              Map<String, String> postData = {
+                "deviceId": await getDeviceIdentity(),
+                "feedback": inputFeedback
+              };
+
+              final result = await ajaxPost(
+                  getApiEndpoint(endpoint.addFeedback), postData);
+
+              final response = getMessageFromJson(result);
+              if (response.status) {
+                message = "Thank's for your Suggestion";
+              } else {
+                message = "Fail to Sent Try again...";
+              }
+              SnackBar snackBar = new SnackBar(
+                content: Text(message),
+                duration: Duration(seconds: 2),
+              );
+              widget.globalKey.currentState.showSnackBar(snackBar);
+              Navigator.of(context).pop();
+            }
           },
         )
       ],
     );
   }
 }
-
 
 /* Setting Tab */
 class CustomAppBar extends StatelessWidget {
@@ -139,9 +165,7 @@ class CustomAppBar extends StatelessWidget {
           Text(
             "ShareBuddy",
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 30.0,
-            ),
+            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w500),
           )
         ],
       ),
@@ -241,3 +265,27 @@ class _ReceiveNotificationState extends State<ReceiveNotification> {
     );
   }
 }
+
+/* 
+
+Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLength: 500,
+              decoration: InputDecoration(
+                labelText: 'FeedBack',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(1))),
+
+                // hintText: hintText
+              ),
+            ),
+          ],
+        ),
+        height: 200,
+      )
+
+ */
