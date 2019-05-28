@@ -49,6 +49,8 @@ Future<String> _getDeviceIdentity() async {
   return _deviceIdentity;
 }
 
+Future<String> getDeviceIdentity() async => _getDeviceIdentity();
+
 /// ----------------------------------------------------------
 /// Method that returns the token from Shared Preferences
 /// ----------------------------------------------------------
