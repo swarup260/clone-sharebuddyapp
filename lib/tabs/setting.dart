@@ -25,9 +25,9 @@ class SettingTab extends StatelessWidget {
           Flexible(
             child: ListView(
               children: <Widget>[
-                ReceiveNotification(
+                /* ReceiveNotification(
                     icons: Icons.notifications,
-                    settingTab: "Receive Notification"),
+                    settingTab: "Receive Notification"), */
                 MeunTab(
                   icons: Icons.share,
                   settingTab: "Share",
@@ -70,20 +70,23 @@ class SettingTab extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
                                 GestureDetector(
-                                  child: Icon(
-                                    FontAwesomeIcons.facebook,
-                                    size: 40,
-                                    color: Colors.blue,
-                                  ),
-                                  onTap: _launchURL("https://www.facebook.com"),
-                                ),
+                                    child: Icon(
+                                      FontAwesomeIcons.facebook,
+                                      size: 40,
+                                      color: Colors.blue,
+                                    ),
+                                    onTap: () {
+                                      _launchURL("https://www.facebook.com");
+                                    }),
                                 GestureDetector(
                                   child: Icon(
                                     FontAwesomeIcons.twitter,
                                     size: 40,
                                     color: Colors.lightBlue,
                                   ),
-                                  onTap: _launchURL("https://www.twitter.com"),
+                                  onTap: () {
+                                    _launchURL("https://www.twitter.com");
+                                  },
                                 ),
                                 GestureDetector(
                                   child: Icon(
@@ -91,7 +94,9 @@ class SettingTab extends StatelessWidget {
                                     size: 40,
                                     color: Colors.red,
                                   ),
-                                  onTap: _launchURL("https://www.google.com"),
+                                  onTap: () {
+                                    _launchURL("https://www.google.com");
+                                  },
                                 ),
                                 GestureDetector(
                                   child: Icon(
@@ -99,8 +104,9 @@ class SettingTab extends StatelessWidget {
                                     size: 40,
                                     color: Colors.pink,
                                   ),
-                                  onTap:
-                                      _launchURL("https://www.instagram.com"),
+                                  onTap: () {
+                                    _launchURL("https://www.instagram.com");
+                                  },
                                 )
                               ],
                             ),
@@ -126,8 +132,12 @@ class SettingTab extends StatelessWidget {
     );
   }
 
-  _launchURL(String url) {
-    launch(url);
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 
@@ -218,10 +228,24 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            "ShareBuddy",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w500),
+          // Text(
+          //   "SHAREBUDDY",
+          //   textAlign: TextAlign.center,
+          //   style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.w500),
+          // )
+          RichText(
+            text: TextSpan(
+              text: 'SHARE ',
+              style: TextStyle(
+                  fontSize: 25.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w800),
+              children: <TextSpan>[
+                TextSpan(
+                    text: 'BUDDY',
+                    style: TextStyle(fontWeight: FontWeight.w400)),
+              ],
+            ),
           )
         ],
       ),
