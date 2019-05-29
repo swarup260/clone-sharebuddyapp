@@ -51,20 +51,21 @@ class _SearchPanelState extends State<SearchPanel> {
 
   // Fetch data from api
   _fetchData() async {
-
     if (this._formKey.currentState.validate()) {
       this._formKey.currentState.save();
     } else {
       return false;
     }
 
-
     setState(() {
       isLoading = true;
       isSearch = true;
     });
 
-    Map<String, dynamic> myObject = {'from': from, 'to': to};
+    Map<String, dynamic> myObject = {
+      'from': from.toLowerCase(),
+      'to': to.toLowerCase()
+    };
     final response =
         await ajaxPost(getApiEndpoint(endpoint.getLocationFromTo), myObject);
 
@@ -72,17 +73,19 @@ class _SearchPanelState extends State<SearchPanel> {
       locationList = getLocationFromJson(response);
       setState(() {
         isLoading = false;
-        if(locationList.length > 0)
-        {
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Total Number of Results: ${locationList.length}', textAlign: TextAlign.center)));
-        }
-        else
-        {
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text('No Direct Route Found.', textAlign: TextAlign.center)));
+        if (locationList.length > 0) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text('Total Number of Results: ${locationList.length}',
+                  textAlign: TextAlign.center)));
+        } else {
+          Scaffold.of(context).showSnackBar(SnackBar(
+              content:
+                  Text('No Direct Route Found.', textAlign: TextAlign.center)));
         }
       });
     } else {
-      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Failed to load data',textAlign: TextAlign.center)));
+      Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('Failed to load data', textAlign: TextAlign.center)));
       throw Exception('Failed to load data');
     }
   }
@@ -107,6 +110,15 @@ class _SearchPanelState extends State<SearchPanel> {
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: this.fromController,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                 setState(() {this.fromController.clear(); });
+                              },
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.black,
+                              ),
+                            ),
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius:
@@ -142,8 +154,16 @@ class _SearchPanelState extends State<SearchPanel> {
                           }
                         },
                         itemBuilder: (context, suggestion) {
-                          return ListTile(
-                            title: Text(suggestion),
+                          return Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(
+                                    '${suggestion[0].toUpperCase()}${suggestion.substring(1)}'),
+                              ),
+                              Divider(
+                                height: 0.0,
+                              ),
+                            ],
                           );
                         },
                         transitionBuilder:
@@ -151,7 +171,8 @@ class _SearchPanelState extends State<SearchPanel> {
                           return suggestionsBox;
                         },
                         onSuggestionSelected: (suggestion) {
-                          this.fromController.text = suggestion;
+                          this.fromController.text =
+                              '${suggestion[0].toUpperCase()}${suggestion.substring(1)}';
                         },
                         validator: (value) {
                           if (value.isEmpty) {
@@ -168,6 +189,15 @@ class _SearchPanelState extends State<SearchPanel> {
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: this.toController,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                 setState(() {this.toController.clear(); });
+                              },
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.black,
+                              ),
+                            ),
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius:
@@ -203,8 +233,16 @@ class _SearchPanelState extends State<SearchPanel> {
                           }
                         },
                         itemBuilder: (context, suggestion) {
-                          return ListTile(
-                            title: Text(suggestion),
+                          return Column(
+                            children: <Widget>[
+                              ListTile(
+                                title: Text(
+                                    '${suggestion[0].toUpperCase()}${suggestion.substring(1)}'),
+                              ),
+                              Divider(
+                                height: 0.0,
+                              ),
+                            ],
                           );
                         },
                         transitionBuilder:
@@ -212,7 +250,8 @@ class _SearchPanelState extends State<SearchPanel> {
                           return suggestionsBox;
                         },
                         onSuggestionSelected: (suggestion) {
-                          this.toController.text = suggestion;
+                          this.toController.text =
+                              '${suggestion[0].toUpperCase()}${suggestion.substring(1)}';
                         },
                         validator: (value) {
                           if (value.isEmpty) {
@@ -238,42 +277,40 @@ class _SearchPanelState extends State<SearchPanel> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 0.0, right: 0.0),
-              child: isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            Theme.of(context).indicatorColor),
-                      ),
-                    )
-                  : _checkLocationListData(locationList)
-            ),
+                padding: EdgeInsets.only(left: 0.0, right: 0.0),
+                child: isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Theme.of(context).indicatorColor),
+                        ),
+                      )
+                    : _checkLocationListData(locationList)),
           ],
         ),
       ],
     );
   }
 
-  Widget _checkLocationListData(locationList)
-  {
-    if(locationList.length > 0)
-    {
+  Widget _checkLocationListData(locationList) {
+    if (locationList.length > 0) {
       return SearchResultPanel(getLocationResponse: locationList);
-    }
-    else
-    {
-      if(isSearch)
-      {
-        return Center(child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-          Icon(Icons.not_listed_location, size: 30.0,),
-          Text("No Direct Route Found.")
-        ],),);
-      }
-      else
-      {
-          //Adsense Code
+    } else {
+      if (isSearch) {
+        return Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(
+                Icons.not_listed_location,
+                size: 30.0,
+              ),
+              Text("No Direct Route Found.")
+            ],
+          ),
+        );
+      } else {
+        //Adsense Code
       }
     }
   }
