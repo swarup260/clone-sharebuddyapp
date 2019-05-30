@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class TermPrivacyTab extends StatelessWidget {
+class Licenses extends StatelessWidget {
   final Widget child;
 
-  TermPrivacyTab({Key key, this.child}) : super(key: key);
+  Licenses({Key key, this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Term and Privacy Policy"),
+          title: Text("Licenses And Agreement"),
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,

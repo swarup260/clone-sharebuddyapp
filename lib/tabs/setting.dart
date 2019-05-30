@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share/share.dart';
 import '../models/getMessage.dart';
 import '../api/apiEndpoint.dart';
 import '../api/networkManager.dart';
 import '../tabs/screens/term_privacy_info.dart';
 import '../tabs/screens/about_us.dart';
-import 'package:share/share.dart';
-import 'dart:async';
 
 class SettingTab extends StatelessWidget {
   SettingTab({Key key}) : super(key: key);
@@ -50,70 +49,14 @@ class SettingTab extends StatelessWidget {
                   },
                 ),
                 MeunTab(
-                    icons: Icons.info,
-                    settingTab: "Term & Privacy Info.",
+                    icons: Icons.vpn_key,
+                    settingTab: "Term and Privacy Policy",
                     callback: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => new TermPrivacyTab()));
                     }),
-                MeunTab(
-                  icons: FontAwesomeIcons.solidShareSquare,
-                  settingTab: "Follow Us",
-                  callback: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            content: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                GestureDetector(
-                                    child: Icon(
-                                      FontAwesomeIcons.facebook,
-                                      size: 40,
-                                      color: Colors.blue,
-                                    ),
-                                    onTap: () {
-                                      _launchURL("https://www.facebook.com");
-                                    }),
-                                GestureDetector(
-                                  child: Icon(
-                                    FontAwesomeIcons.twitter,
-                                    size: 40,
-                                    color: Colors.lightBlue,
-                                  ),
-                                  onTap: () {
-                                    _launchURL("https://www.twitter.com");
-                                  },
-                                ),
-                                GestureDetector(
-                                  child: Icon(
-                                    FontAwesomeIcons.google,
-                                    size: 40,
-                                    color: Colors.red,
-                                  ),
-                                  onTap: () {
-                                    _launchURL("https://www.google.com");
-                                  },
-                                ),
-                                GestureDetector(
-                                  child: Icon(
-                                    FontAwesomeIcons.instagram,
-                                    size: 40,
-                                    color: Colors.pink,
-                                  ),
-                                  onTap: () {
-                                    _launchURL("https://www.instagram.com");
-                                  },
-                                )
-                              ],
-                            ),
-                          );
-                        });
-                  },
-                ),
                 MeunTab(
                   icons: FontAwesomeIcons.info,
                   settingTab: "About Us",
@@ -130,14 +73,6 @@ class SettingTab extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }
 
@@ -225,7 +160,7 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       height: deviceHeight / 2 * 0.4,
       decoration: new BoxDecoration(color: Theme.of(context).primaryColor),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           // Text(
@@ -246,10 +181,47 @@ class CustomAppBar extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.w400)),
               ],
             ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
+                  child: Icon(FontAwesomeIcons.facebook, size: 25),
+                  onTap: () {
+                    _launchURL("https://www.facebook.com/sharebuddyapp/");
+                  }),
+              SizedBox(width: 20),
+              GestureDetector(
+                child: Icon(FontAwesomeIcons.twitter, size: 25),
+                onTap: () {
+                  _launchURL("https://www.twitter.com");
+                },
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              GestureDetector(
+                child: Icon(FontAwesomeIcons.instagram, size: 25),
+                onTap: () {
+                  _launchURL("https://www.instagram.com/sharebuddyapp/");
+                },
+              )
+            ],
           )
         ],
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 
