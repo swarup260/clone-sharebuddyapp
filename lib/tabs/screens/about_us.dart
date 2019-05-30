@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'Licenses.dart';
 
 class AboutUsPage extends StatelessWidget {
   final Widget child;
@@ -35,9 +36,15 @@ class AboutUsPage extends StatelessWidget {
               SizedBox(
                 height: 40,
               ),
-              Text(
-                'licenses'.toUpperCase(),
-                style: TextStyle(color: Colors.blue),
+              GestureDetector(
+                child: Text(
+                  'licenses'.toUpperCase(),
+                  style: TextStyle(color: Colors.blue),
+                ),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => new Licenses()));
+                },
               )
             ],
           ),
