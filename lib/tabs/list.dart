@@ -102,7 +102,7 @@ class _SearchPanelState extends State<SearchPanel> {
               child: Form(
                 key: this._formKey,
                 child: Padding(
-                  padding: EdgeInsets.all(32.0),
+                  padding: EdgeInsets.all(20.0),
                   child: Column(
                     children: <Widget>[
                       // Source TextBox
@@ -110,24 +110,24 @@ class _SearchPanelState extends State<SearchPanel> {
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: this.fromController,
                           decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                 setState(() {this.fromController.clear(); });
-                              },
-                              icon: Icon(
-                                Icons.clear,
-                                color: Colors.black,
-                              ),
-                            ),
+                            // suffixIcon: IconButton(
+                            //   onPressed: () {
+                            //      setState(() {this.fromController.clear(); });
+                            //   },
+                            //   icon: Icon(
+                            //     Icons.clear,
+                            //     color: Colors.black,
+                            //   ),
+                            // ),
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                            ),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius:
+                            //       BorderRadius.all(Radius.circular(20.0)),
+                            // ),
                             filled: true,
                             prefixIcon: Icon(Icons.my_location,
                                 color: Colors.black, size: 25.0),
@@ -178,6 +178,10 @@ class _SearchPanelState extends State<SearchPanel> {
                           if (value.isEmpty) {
                             return 'Please Select Source';
                           }
+                          if(value.length < 5)
+                          {
+                            return 'Please Selete Source from list';
+                          }
                         },
                         onSaved: (value) => this.from = value,
                       ),
@@ -189,24 +193,24 @@ class _SearchPanelState extends State<SearchPanel> {
                         textFieldConfiguration: TextFieldConfiguration(
                           controller: this.toController,
                           decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                 setState(() {this.toController.clear(); });
-                              },
-                              icon: Icon(
-                                Icons.clear,
-                                color: Colors.black,
-                              ),
-                            ),
+                            // suffixIcon: IconButton(
+                            //   onPressed: () {
+                            //      setState(() {this.toController.clear(); });
+                            //   },
+                            //   icon: Icon(
+                            //     Icons.clear,
+                            //     color: Colors.black,
+                            //   ),
+                            // ),
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0)),
+                                  BorderRadius.all(Radius.circular(8.0)),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                            ),
+                            // focusedBorder: OutlineInputBorder(
+                            //   borderRadius:
+                            //       BorderRadius.all(Radius.circular(20.0)),
+                            // ),
                             filled: true,
                             prefixIcon: Icon(Icons.place,
                                 color: Colors.black, size: 25.0),
@@ -257,6 +261,10 @@ class _SearchPanelState extends State<SearchPanel> {
                           if (value.isEmpty) {
                             return 'Please Select Destination';
                           }
+                          if(value.length < 5)
+                          {
+                            return 'Please Selete Destination from list';
+                          }
                         },
                         onSaved: (value) => this.to = value,
                       ),
@@ -264,13 +272,17 @@ class _SearchPanelState extends State<SearchPanel> {
                       SizedBox(height: 10.0),
 
                       //Search Button
-                      RaisedButton(
-                          textColor: Colors.white,
-                          color: Colors.black,
-                          child: Text("Search"),
-                          onPressed: _fetchData,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0)))
+                      ButtonTheme(
+                        minWidth: 130,
+                        height: 43,
+                          child: RaisedButton(
+                        textColor: Colors.white,
+                        color: Colors.black,
+                        child: Text("Search"),
+                        onPressed: _fetchData,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                      ))
                     ],
                   ),
                 ),
@@ -280,6 +292,7 @@ class _SearchPanelState extends State<SearchPanel> {
                 padding: EdgeInsets.only(left: 0.0, right: 0.0),
                 child: isLoading
                     ? Center(
+                      heightFactor: 5,
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
                               Theme.of(context).indicatorColor),
@@ -298,6 +311,7 @@ class _SearchPanelState extends State<SearchPanel> {
     } else {
       if (isSearch) {
         return Center(
+          heightFactor: 5,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -305,7 +319,7 @@ class _SearchPanelState extends State<SearchPanel> {
                 Icons.not_listed_location,
                 size: 30.0,
               ),
-              Text("No Direct Route Found.")
+              Text("No Direct Route Found.",style: TextStyle(fontSize: 20),)
             ],
           ),
         );
