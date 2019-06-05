@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -69,7 +70,18 @@ class SettingTab extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              AdmobBanner(
+                adUnitId: getBannerAdUnitId(bannerAdType.LARGE_BANNER),
+                adSize: AdmobBannerSize.LARGE_BANNER,
+              ),
+            ],
+          ),
         ],
       ),
     );

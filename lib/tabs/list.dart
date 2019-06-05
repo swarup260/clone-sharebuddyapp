@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:admob_flutter/admob_flutter.dart';
 
 import '../models/GetLocation.dart';
 import '../models/GetLocationList.dart';
@@ -178,8 +179,7 @@ class _SearchPanelState extends State<SearchPanel> {
                           if (value.isEmpty) {
                             return 'Please Select Source';
                           }
-                          if(value.length < 5)
-                          {
+                          if (value.length < 5) {
                             return 'Please Selete Source from list';
                           }
                         },
@@ -261,8 +261,7 @@ class _SearchPanelState extends State<SearchPanel> {
                           if (value.isEmpty) {
                             return 'Please Select Destination';
                           }
-                          if(value.length < 5)
-                          {
+                          if (value.length < 5) {
                             return 'Please Selete Destination from list';
                           }
                         },
@@ -273,32 +272,37 @@ class _SearchPanelState extends State<SearchPanel> {
 
                       //Search Button
                       ButtonTheme(
-                        minWidth: 130,
-                        height: 43,
+                          minWidth: 130,
+                          height: 43,
                           child: RaisedButton(
-                        textColor: Colors.white,
-                        color: Colors.black,
-                        child: Text("Search"),
-                        onPressed: _fetchData,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                      ))
+                            textColor: Colors.white,
+                            color: Colors.black,
+                            child: Text("Search"),
+                            onPressed: _fetchData,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0)),
+                          ))
                     ],
                   ),
                 ),
               ),
             ),
+            AdmobBanner(
+              adUnitId: getBannerAdUnitId(bannerAdType.FULL_BANNER),
+              adSize: AdmobBannerSize.FULL_BANNER,
+            ),
             Padding(
-                padding: EdgeInsets.only(left: 0.0, right: 0.0),
-                child: isLoading
-                    ? Center(
+              padding: EdgeInsets.only(left: 0.0, right: 0.0),
+              child: isLoading
+                  ? Center(
                       heightFactor: 5,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              Theme.of(context).indicatorColor),
-                        ),
-                      )
-                    : _checkLocationListData(locationList)),
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).indicatorColor),
+                      ),
+                    )
+                  : _checkLocationListData(locationList),
+            ),
           ],
         ),
       ],
@@ -319,7 +323,10 @@ class _SearchPanelState extends State<SearchPanel> {
                 Icons.not_listed_location,
                 size: 30.0,
               ),
-              Text("No Direct Route Found.",style: TextStyle(fontSize: 20),)
+              Text(
+                "No Direct Route Found.",
+                style: TextStyle(fontSize: 20),
+              )
             ],
           ),
         );

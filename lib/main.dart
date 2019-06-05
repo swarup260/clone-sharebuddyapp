@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:admob_flutter/admob_flutter.dart';
+
+import 'api/apiEndpoint.dart';
 import 'home.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  Admob.initialize(getAppId());
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
