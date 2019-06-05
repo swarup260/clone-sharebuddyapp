@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'tabs/map.dart';
 import 'tabs/list.dart';
@@ -31,6 +32,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
         children: <Widget>[MapTab(), ListTab(), SettingTab()],
         controller: controller,
       ),
@@ -41,25 +43,28 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
             Tab(
               icon: Icon(
                 Icons.map,
-                color: Theme.of(context).primaryIconTheme.color,
+                // color: Theme.of(context).primaryIconTheme.color,
               ),
             ),
             Tab(
               icon: Icon(
                 Icons.format_list_bulleted,
-                color: Theme.of(context).primaryIconTheme.color,
+                // color: Theme.of(context).primaryIconTheme.color,
               ),
             ),
             Tab(
               icon: Icon(
                 Icons.settings,
-                color: Theme.of(context).primaryIconTheme.color,
+                // color: Theme.of(context).primaryIconTheme.color,
               ),
             )
           ],
           // setup the controller
           controller: controller,
-          indicatorColor: Theme.of(context).indicatorColor,
+          unselectedLabelColor: Theme.of(context).hintColor,
+          indicatorSize: TabBarIndicatorSize.label,
+          indicatorPadding: EdgeInsets.all(5.0),
+          indicatorColor: Theme.of(context).primaryIconTheme.color,
         ),
       ),
     );
