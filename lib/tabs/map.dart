@@ -1,6 +1,8 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:share_buddy/widget/result_card.dart';
@@ -32,48 +34,67 @@ class _MapTabState extends State<MapTab> {
   GoogleMapController mapController;
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        _googleMap(context),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 20.0),
-            height: 80.0,
-            child: ListView.separated(
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(
-                  width: 10.0,
-                );
-              },
-              itemCount: locationList.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  height: 25.0,
-                  width: 250.0,
-                  child: new ResultCard(
-                    object: locationList[index],
-                    fontSize: 10.0,
-                    priceSize: 15.0,
-                    imageSize: 15.0,
-                    iconFlag: false,
-                    callback: () {
-                      mapController.animateCamera(
-                          CameraUpdate.newCameraPosition(CameraPosition(
-                              target: LatLng(
-                                  locationList[index].location.coordinates[1],
-                                  locationList[index].location.coordinates[0]),
-                              zoom: 20.0,
-                              tilt: 30.0)));
-                    },
-                  ),
-                );
-              },
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor:
+          Theme.of(context).primaryColorDark, //or set color with: Color(0xFF0000FF)
+    ));
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            _googleMap(context),
+            Align(
+              alignment: Alignment.topLeft,
+              child: AdmobBanner(
+                adUnitId: getBannerAdUnitId(bannerAdType.BANNER),
+                adSize: AdmobBannerSize.BANNER,
+              ),
             ),
-          ),
-        )
-      ],
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 20.0),
+                height: 80.0,
+                child: ListView.separated(
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      width: 10.0,
+                    );
+                  },
+                  itemCount: locationList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: 25.0,
+                      width: 250.0,
+                      child: new ResultCard(
+                        object: locationList[index],
+                        fontSize: 10.0,
+                        priceSize: 15.0,
+                        imageSize: 15.0,
+                        iconFlag: false,
+                        callback: () {
+                          mapController.animateCamera(
+                              CameraUpdate.newCameraPosition(CameraPosition(
+                                  target: LatLng(
+                                      locationList[index]
+                                          .location
+                                          .coordinates[1],
+                                      locationList[index]
+                                          .location
+                                          .coordinates[0]),
+                                  zoom: 20.0,
+                                  tilt: 30.0)));
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 

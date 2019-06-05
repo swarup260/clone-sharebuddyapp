@@ -14,7 +14,7 @@ class ListTab extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor:
-          Theme.of(context).primaryColor, //or set color with: Color(0xFF0000FF)
+          Theme.of(context).primaryColorDark, //or set color with: Color(0xFF0000FF)
     ));
     return Scaffold(
       body: SafeArea(

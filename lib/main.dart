@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Share Buddy',
       theme: ThemeData(
-        primarySwatch: Colors.amber,
+        primaryColorDark: Colors.amber[600],
         primaryColor: Colors.amber,
         primaryIconTheme: IconThemeData(color: Colors.black),
         iconTheme: IconThemeData(color: Colors.black),

@@ -1,5 +1,6 @@
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:share/share.dart';
@@ -14,6 +15,10 @@ class SettingTab extends StatelessWidget {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor:
+          Theme.of(context).primaryColorDark, //or set color with: Color(0xFF0000FF)
+    ));
     double deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
