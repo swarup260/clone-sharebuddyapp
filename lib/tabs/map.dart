@@ -1,146 +1,136 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:share_buddy/models/pointLocation.dart';
+import 'package:location/location.dart';
+import 'package:share_buddy/widget/result_card.dart';
+import '../models/GetLocation.dart';
+import '../api/apiEndpoint.dart';
+import '../api/networkManager.dart';
 
+class MapTab extends StatefulWidget {
+  final Widget child;
 
-// class MapTab extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Map'),
-//       ),
-//       body: Center(
-//         child: Text('Welcome to Map'),
-//       ),
-//     );
-//   }
-// }
+  MapTab({Key key, this.child}) : super(key: key);
 
-class MapTab extends StatelessWidget {
- @override
- Widget build(BuildContext context){
-   return new Scaffold(
-     body: new GoogleMaps(),
-   );
- }
- //_MyAppState createState() => _MyAppState();
+  _MapTabState createState() => _MapTabState();
 }
 
-class GoogleMaps extends StatefulWidget {
-  GoogleMaps({Key key}) : super(key: key);
+class _MapTabState extends State<MapTab> {
+  Location location = new Location();
 
-  @override
-  _GoogleMaps createState() => new _GoogleMaps();
+  List<Datum> locationList = [];
 
-}
-
-class _GoogleMaps extends State<GoogleMaps> {
+  // void initState() {
+  //   super.initState();
+  //   // LocationData pos = await location.getLocation();
+  //   // final result = ajaxPost(getApiEndpoint(endpoint.getLocationFromCurrent),
+  //   //     {'distance': 5, 'latitude': pos.latitude, 'longitude': pos.longitude});
+  //   // print(result);
+  // }
 
   GoogleMapController mapController;
-
-  List<PointLocation> pointsList = List<PointLocation>();       //points array
-
-  final LatLng _center = const LatLng(19.0760, 72.8777);
-
-  //
-  //Static array of points to display markers on the map
-  //
-  @override 
-  void initState() {
-    var point = PointLocation(
-      idPoint: 1,
-      namePoint: 'Powai',
-      lat: 19.1197,
-      long: 72.9051,
-      landmark: 'Nearby IITBombay',
-      fare: 20
-    );
-    pointsList.add(point);
-    point = PointLocation(
-      idPoint: 2,
-      namePoint: 'Ghatkopar',
-      lat: 19.0790,
-      long: 72.9080,
-      landmark: 'Nearby RCity Mall',
-      fare: 20
-    );
-    pointsList.add(point);
-
-    super.initState();
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    var mq =MediaQuery.of(context);
-    return Center(
-      child: SizedBox(
-        width: mq.size.width,
-        height: mq.size.height,
-        child: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-             zoom: 11.0,
-         ),
-         markers: _addMarkers(),
+    return Stack(
+      children: <Widget>[
+        _googleMap(context),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 20.0),
+            height: 80.0,
+            child: ListView.separated(
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(
+                  width: 10.0,
+                );
+              },
+              itemCount: locationList.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: 25.0,
+                  width: 250.0,
+                  child: new ResultCard(
+                    object: locationList[index],
+                    fontSize: 10.0,
+                    priceSize: 15.0,
+                    imageSize: 15.0,
+                    iconFlag: false,
+                    callback: () {
+                      mapController.animateCamera(
+                          CameraUpdate.newCameraPosition(CameraPosition(
+                              target: LatLng(
+                                  locationList[index].location.coordinates[1],
+                                  locationList[index].location.coordinates[0]),
+                              zoom: 20.0,
+                              tilt: 30.0)));
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        )
+      ],
+    );
+  }
 
-        ),
+  Widget _googleMap(BuildContext context) {
+    final double deviceHeight = MediaQuery.of(context).size.height;
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    return Container(
+      height: deviceHeight,
+      width: deviceWidth,
+      child: GoogleMap(
+        initialCameraPosition:
+            CameraPosition(target: LatLng(19.0760, 72.8777), zoom: 15),
+        onMapCreated: _onMapCreated,
+        mapType: MapType.normal,
+        rotateGesturesEnabled: true,
+        zoomGesturesEnabled: true,
+        myLocationEnabled: true,
+        gestureRecognizers: Set()
+          ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
+        markers: _markers(),
       ),
     );
   }
 
-  void _onMapCreated(GoogleMapController controller) {
+  /* _omMapCreated Controller  */
+  void _onMapCreated(GoogleMapController controller) async {
+    LocationData pos = await location.getLocation();
+    try {
+      final result = await ajaxPost(
+          getApiEndpoint(endpoint.getLocationFromCurrent), {
+        'distance': 5,
+        'latitude': pos.latitude,
+        'longitude': pos.longitude
+      });
+      locationList = getLocationFromJson(result).data;
+    } catch (e) {
+      /* network error code */
+    }
     setState(() {
       mapController = controller;
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(pos.latitude, pos.longitude), zoom: 15.0)));
     });
   }
 
-  Set<Marker> _addMarkers() {
+  /* tesing the Markers */
+  Set<Marker> _markers() {
     Set<Marker> markerSet = <Marker>{};
 
-    pointsList.forEach((loc) {
+    locationList.forEach((value) {
       markerSet.add(Marker(
-        markerId: MarkerId(loc.idPoint.toString()),
-        position: LatLng(loc.lat, loc.long),
-        infoWindow: InfoWindow(title: loc.namePoint + ', ' + loc.landmark),
-        visible: true
-      ));
+          markerId: MarkerId(value.id.toString()),
+          position: LatLng(
+              value.location.coordinates[1], value.location.coordinates[0]),
+          infoWindow: InfoWindow(title: value.landmark),
+          icon: BitmapDescriptor.fromAsset('assets/images/taxi.png')));
     });
-
     return markerSet;
   }
-
-
-
-
 }
-// class _MyAppState extends State<MapTab> {
-//  GoogleMapController mapController;
-
-//  final LatLng _center = const LatLng(45.521563, -122.677433);
-
-//  void _onMapCreated(GoogleMapController controller) {
-//    mapController = controller;
-//  }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return MaterialApp(
-//      home: Scaffold(
-//        appBar: AppBar(
-//          title: Text('Maps Sample App'),
-//          backgroundColor: Theme.of(context).primaryColor,
-//        ),
-//        body: GoogleMap(
-//          onMapCreated: _onMapCreated,
-//          initialCameraPosition: CameraPosition(
-//             target: _center,
-//              zoom: 11.0,
-//          ),
-//        ),
-//      ),
-//    );
-//  }
-// }
