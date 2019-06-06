@@ -7,6 +7,8 @@ const _mediumBanner = "ca-app-pub-3940256099942544/6300978111";
 const _fullBanner = "ca-app-pub-3940256099942544/6300978111";
 const _leaderboardBanner = "ca-app-pub-3940256099942544/6300978111";
 
+const _interstitialAd= "ca-app-pub-3940256099942544/1033173712";
+
 /* Api Enum */
 enum endpoint {
   getAllLocation,
@@ -55,3 +57,4 @@ String getBaseurl() => _baseUrl;
 /*Admob */
 String getAppId() => _appId;
 String getBannerAdUnitId(bannerAdType) => _bannerAdType[bannerAdType];
+String getInterstitialAdUnitId() => _interstitialAd;

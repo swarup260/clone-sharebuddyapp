@@ -37,6 +37,13 @@ class SearchPanel extends StatefulWidget {
 }
 
 class _SearchPanelState extends State<SearchPanel> {
+
+// interstitial Ad Init- Admob
+int _locationSearchCount = 0;
+AdmobInterstitial interstitialAd = AdmobInterstitial(
+  adUnitId: getInterstitialAdUnitId(),
+);
+
   List<Datum> locationList = List();
   List locationNameList = List();
 
@@ -60,9 +67,20 @@ class _SearchPanelState extends State<SearchPanel> {
     }
 
     setState(() {
+      _locationSearchCount++;
       isLoading = true;
       isSearch = true;
     });
+
+    // interstitial Ad Load & Show - Admob
+    if(_locationSearchCount > 1)
+    {
+      interstitialAd..load()..show();
+
+      setState(() {
+        _locationSearchCount = 0;
+      });
+    }
 
     Map<String, dynamic> myObject = {
       'from': from.toLowerCase(),
