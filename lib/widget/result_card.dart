@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ResultCard extends StatelessWidget {
   final Widget child;
-  var object;
+  final object;
   final double fontSize;
   final double imageSize;
   final double priceSize;
@@ -139,106 +139,4 @@ class ResultCard extends StatelessWidget {
       )),
     );
   }
-}
-
-Widget resultCard(String from, String to, String landmark, String price,
-    String kilometer, String type, Color verified) {
-  return Padding(
-    padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0),
-    child: Card(
-        child: Container(
-      height: 120.0,
-      width: double.infinity,
-      padding: EdgeInsets.only(left: 8.0),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 8,
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text(
-                    from,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.swap_vert),
-                      Text(
-                        landmark,
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    to,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Text(
-                    "\u20B9" + price,
-                    style: TextStyle(
-                        color: verified,
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    kilometer,
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                  //Icon(Icons.local_taxi),
-                  Image.asset(
-                    type,
-                    width: 35,
-                    height: 35,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 0,
-            child: Container(
-              padding: EdgeInsets.only(top: 5.0, right: 5.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  // Icon(
-                  //   Icons.check_circle,
-                  //   color: Colors.green,
-                  //   size: 15.0,
-                  // )
-                  CircleAvatar(
-                    backgroundColor: verified,
-                    radius: 5.0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    )),
-  );
 }
