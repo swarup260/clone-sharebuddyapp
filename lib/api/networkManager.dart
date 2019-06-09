@@ -114,7 +114,7 @@ Future<dynamic> handShake() async {
 /// ----------------------------------------------------------
 /// Http "GET" request
 /// ----------------------------------------------------------
-Future<dynamic> ajaxGet(String serviceName, {Map query = null}) async {
+Future<dynamic> ajaxGet(String serviceName, {Map query}) async {
   try {
     final response =
         await http.get(Uri.http(_urlBase, serviceName, query), headers: {
