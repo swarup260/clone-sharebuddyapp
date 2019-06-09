@@ -6,9 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:share_buddy/widget/result_card.dart';
-import '../models/GetLocation.dart';
+
 import '../api/apiEndpoint.dart';
 import '../api/networkManager.dart';
+import '../models/GetLocation.dart';
 
 class MapTab extends StatefulWidget {
   final Widget child;
@@ -18,26 +19,20 @@ class MapTab extends StatefulWidget {
   _MapTabState createState() => _MapTabState();
 }
 
-class _MapTabState extends State<MapTab> {
+class _MapTabState extends State<MapTab>
+    with AutomaticKeepAliveClientMixin<MapTab> {
   Location location = new Location();
 
   List<Datum> locationList = [];
-
-  // void initState() {
-  //   super.initState();
-  //   // LocationData pos = await location.getLocation();
-  //   // final result = ajaxPost(getApiEndpoint(endpoint.getLocationFromCurrent),
-  //   //     {'distance': 5, 'latitude': pos.latitude, 'longitude': pos.longitude});
-  //   // print(result);
-  // }
 
   GoogleMapController mapController;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor:
-          Theme.of(context).primaryColorDark, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Theme.of(context)
+          .primaryColorDark, //or set color with: Color(0xFF0000FF)
     ));
+    super.build(context);
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -55,46 +50,46 @@ class _MapTabState extends State<MapTab> {
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 20.0),
                 height: 80.0,
-                child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: 10.0,
-                    );
-                  },
-                  itemCount: locationList.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: 25.0,
-                      width: 250.0,
-                      child: new ResultCard(
-                        object: locationList[index],
-                        fontSize: 10.0,
-                        priceSize: 15.0,
-                        imageSize: 15.0,
-                        iconFlag: false,
-                        callback: () {
-                          mapController.animateCamera(
-                              CameraUpdate.newCameraPosition(CameraPosition(
-                                  target: LatLng(
-                                      locationList[index]
-                                          .location
-                                          .coordinates[1],
-                                      locationList[index]
-                                          .location
-                                          .coordinates[0]),
-                                  zoom: 20.0,
-                                  tilt: 30.0)));
-                        },
-                      ),
-                    );
-                  },
-                ),
+                child: buildListView(),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildListView() {
+    return ListView.separated(
+      separatorBuilder: (BuildContext context, int index) {
+        return SizedBox(
+          width: 10.0,
+        );
+      },
+      itemCount: locationList.length,
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          height: 25.0,
+          width: 250.0,
+          child: new ResultCard(
+            object: locationList[index],
+            fontSize: 10.0,
+            priceSize: 15.0,
+            imageSize: 15.0,
+            iconFlag: false,
+            callback: () {
+              mapController.animateCamera(CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                      target: LatLng(
+                          locationList[index].location.coordinates[1],
+                          locationList[index].location.coordinates[0]),
+                      zoom: 20.0,
+                      tilt: 30.0)));
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -140,7 +135,6 @@ class _MapTabState extends State<MapTab> {
     });
   }
 
-  /* tesing the Markers */
   Set<Marker> _markers() {
     Set<Marker> markerSet = <Marker>{};
 
@@ -150,8 +144,14 @@ class _MapTabState extends State<MapTab> {
           position: LatLng(
               value.location.coordinates[1], value.location.coordinates[0]),
           infoWindow: InfoWindow(title: value.landmark),
-          icon: BitmapDescriptor.fromAsset('assets/images/taxi.png')));
+          icon: BitmapDescriptor.fromAsset(value.type == "auto"
+              ? 'assets/images/auto.png'
+              : 'assets/images/taxi.png')));
     });
     return markerSet;
   }
+
+  /* End Map Helper Function */
+  @override
+  bool get wantKeepAlive => false;
 }
