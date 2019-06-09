@@ -13,8 +13,8 @@ class ListTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor:
-          Theme.of(context).primaryColorDark, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Theme.of(context)
+          .primaryColorDark, //or set color with: Color(0xFF0000FF)
     ));
     return Scaffold(
       body: SafeArea(
@@ -36,7 +36,8 @@ class SearchPanel extends StatefulWidget {
   _SearchPanelState createState() => _SearchPanelState();
 }
 
-class _SearchPanelState extends State<SearchPanel> {
+class _SearchPanelState extends State<SearchPanel>
+    with AutomaticKeepAliveClientMixin<SearchPanel> {
   List<Datum> locationList = List();
   List locationNameList = List();
 
@@ -94,6 +95,7 @@ class _SearchPanelState extends State<SearchPanel> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Stack(
       children: <Widget>[
         Column(
@@ -335,6 +337,9 @@ class _SearchPanelState extends State<SearchPanel> {
       }
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 /* Result Section */
