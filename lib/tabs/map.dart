@@ -18,87 +18,130 @@ class MapTab extends StatefulWidget {
   _MapTabState createState() => _MapTabState();
 }
 
-class _MapTabState extends State<MapTab> {
+class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   Location location = new Location();
 
   List<Datum> locationList = [];
 
   // void initState() {
   //   super.initState();
-  //   // LocationData pos = await location.getLocation();
-  //   // final result = ajaxPost(getApiEndpoint(endpoint.getLocationFromCurrent),
-  //   //     {'distance': 5, 'latitude': pos.latitude, 'longitude': pos.longitude});
-  //   // print(result);
+  //   // getLocation(5);
   // }
+
+  Future<List<Datum>> getLocation(int distance) async {
+    try {
+      LocationData pos = await location.getLocation();
+
+      var httpResponse = await ajaxPost(
+          getApiEndpoint(endpoint.getLocationFromCurrent), {
+        'distance': distance,
+        'latitude': pos.latitude,
+        'longitude': pos.longitude
+      });
+      GetLocation result = getLocationFromJson(httpResponse);
+      if (result.status) {
+        return result.data;
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
 
   GoogleMapController mapController;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor:
-          Theme.of(context).primaryColorDark, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Theme.of(context)
+          .primaryColorDark, //or set color with: Color(0xFF0000FF)
     ));
+    super.build(context);
     return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            _googleMap(context),
-            Align(
-              alignment: Alignment.topLeft,
-              child: AdmobBanner(
-                adUnitId: getBannerAdUnitId(bannerAdType.BANNER),
-                adSize: AdmobBannerSize.BANNER,
+      body: FutureBuilder(
+        future: getLocation(5),
+        initialData: locationList,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return AlertDialog(
+              content: Text("Network Error"),
+            );
+          }
+          if (snapshot.data.length > 0) {
+            return Stack(
+              children: <Widget>[
+                _googleMap(context, snapshot.data),
+                buildAlign(snapshot.data)
+              ],
+            );
+          } else {
+            return Container(
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 20.0),
-                height: 80.0,
-                child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      width: 10.0,
-                    );
-                  },
-                  itemCount: locationList.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: 25.0,
-                      width: 250.0,
-                      child: new ResultCard(
-                        object: locationList[index],
-                        fontSize: 10.0,
-                        priceSize: 15.0,
-                        imageSize: 15.0,
-                        iconFlag: false,
-                        callback: () {
-                          mapController.animateCamera(
-                              CameraUpdate.newCameraPosition(CameraPosition(
-                                  target: LatLng(
-                                      locationList[index]
-                                          .location
-                                          .coordinates[1],
-                                      locationList[index]
-                                          .location
-                                          .coordinates[0]),
-                                  zoom: 20.0,
-                                  tilt: 30.0)));
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            )
-          ],
+            );
+          }
+        },
+      ),
+      floatingActionButton: Align(
+        alignment: Alignment(1, 0.6),
+        child: FloatingActionButton(
+          onPressed: () async {
+            LocationData pos = await location.getLocation();
+            setState(() {
+              mapController.animateCamera(CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                      target: LatLng(pos.latitude, pos.longitude),
+                      zoom: 15.0)));
+            });
+          },
+          child: Icon(Icons.my_location),
         ),
       ),
     );
   }
 
-  Widget _googleMap(BuildContext context) {
+  Align buildAlign(List<Datum> locationList) {
+    return Align(
+      alignment: Alignment.bottomLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 20.0),
+        height: 80.0,
+        child: ListView.separated(
+          separatorBuilder: (BuildContext context, int index) {
+            return SizedBox(
+              width: 10.0,
+            );
+          },
+          itemCount: locationList.length,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) {
+            double cardwidth = MediaQuery.of(context).size.width * 0.7;
+            return Container(
+              height: 50,
+              width: cardwidth,
+              child: new ResultCard(
+                object: locationList[index],
+                fontSize: 10.0,
+                priceSize: 15.0,
+                imageSize: 15.0,
+                iconFlag: false,
+                callback: () {
+                  mapController.animateCamera(CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                          target: LatLng(
+                              locationList[index].location.coordinates[1],
+                              locationList[index].location.coordinates[0]),
+                          zoom: 20.0,
+                          tilt: 30.0)));
+                },
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _googleMap(BuildContext context, List<Datum> data) {
     final double deviceHeight = MediaQuery.of(context).size.height;
     final double deviceWidth = MediaQuery.of(context).size.width;
     return Container(
@@ -111,10 +154,10 @@ class _MapTabState extends State<MapTab> {
         mapType: MapType.normal,
         rotateGesturesEnabled: true,
         zoomGesturesEnabled: true,
-        myLocationEnabled: true,
+        // myLocationEnabled: true,
         gestureRecognizers: Set()
           ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
-        markers: _markers(),
+        markers: _markers(data),
       ),
     );
   }
@@ -122,17 +165,6 @@ class _MapTabState extends State<MapTab> {
   /* _omMapCreated Controller  */
   void _onMapCreated(GoogleMapController controller) async {
     LocationData pos = await location.getLocation();
-    try {
-      final result = await ajaxPost(
-          getApiEndpoint(endpoint.getLocationFromCurrent), {
-        'distance': 5,
-        'latitude': pos.latitude,
-        'longitude': pos.longitude
-      });
-      locationList = getLocationFromJson(result).data;
-    } catch (e) {
-      /* network error code */
-    }
     setState(() {
       mapController = controller;
       mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -140,8 +172,7 @@ class _MapTabState extends State<MapTab> {
     });
   }
 
-  /* tesing the Markers */
-  Set<Marker> _markers() {
+  Set<Marker> _markers(List<Datum> locationList) {
     Set<Marker> markerSet = <Marker>{};
 
     locationList.forEach((value) {
@@ -150,8 +181,13 @@ class _MapTabState extends State<MapTab> {
           position: LatLng(
               value.location.coordinates[1], value.location.coordinates[0]),
           infoWindow: InfoWindow(title: value.landmark),
-          icon: BitmapDescriptor.fromAsset('assets/images/taxi.png')));
+          icon: BitmapDescriptor.fromAsset(value.type == 'auto'
+              ? 'assets/images/auto_150.png'
+              : 'assets/images/taxi_150.png')));
     });
     return markerSet;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
