@@ -69,6 +69,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
             return Stack(
               children: <Widget>[
                 _googleMap(context, snapshot.data),
+                admodWidget(),
                 buildAlign(snapshot.data)
               ],
             );
@@ -95,6 +96,16 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
           },
           child: Icon(Icons.my_location),
         ),
+      ),
+    );
+  }
+
+  Align admodWidget() {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: AdmobBanner(
+        adUnitId: getBannerAdUnitId(bannerAdType.BANNER),
+        adSize: AdmobBannerSize.BANNER,
       ),
     );
   }
