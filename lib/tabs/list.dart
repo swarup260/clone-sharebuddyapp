@@ -13,8 +13,8 @@ class ListTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor:
-          Theme.of(context).primaryColorDark, //or set color with: Color(0xFF0000FF)
+      statusBarColor: Theme.of(context)
+          .primaryColorDark, //or set color with: Color(0xFF0000FF)
     ));
     return Scaffold(
       body: SafeArea(
@@ -36,13 +36,13 @@ class SearchPanel extends StatefulWidget {
   _SearchPanelState createState() => _SearchPanelState();
 }
 
-class _SearchPanelState extends State<SearchPanel> {
-
+class _SearchPanelState extends State<SearchPanel>
+    with AutomaticKeepAliveClientMixin {
 // interstitial Ad Init- Admob
-int _locationSearchCount = 0;
-AdmobInterstitial interstitialAd = AdmobInterstitial(
-  adUnitId: getInterstitialAdUnitId(),
-);
+  int _locationSearchCount = 0;
+  AdmobInterstitial interstitialAd = AdmobInterstitial(
+    adUnitId: getInterstitialAdUnitId(),
+  );
 
   List<Datum> locationList = List();
   List locationNameList = List();
@@ -73,9 +73,10 @@ AdmobInterstitial interstitialAd = AdmobInterstitial(
     });
 
     // interstitial Ad Load & Show - Admob
-    if(_locationSearchCount > 1)
-    {
-      interstitialAd..load()..show();
+    if (_locationSearchCount > 1) {
+      interstitialAd
+        ..load()
+        ..show();
 
       setState(() {
         _locationSearchCount = 0;
@@ -112,6 +113,7 @@ AdmobInterstitial interstitialAd = AdmobInterstitial(
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Stack(
       children: <Widget>[
         Column(
@@ -353,6 +355,9 @@ AdmobInterstitial interstitialAd = AdmobInterstitial(
       }
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 /* Result Section */
