@@ -8,11 +8,20 @@ import '../api/networkManager.dart';
 import '../tabs/screens/term_privacy_info.dart';
 import '../tabs/screens/about_us.dart';
 
-class SettingTab extends StatelessWidget {
+class SettingTab extends StatefulWidget {
   SettingTab({Key key}) : super(key: key);
+
+  @override
+  _SettingTabState createState() => _SettingTabState();
+}
+
+class _SettingTabState extends State<SettingTab>
+    with AutomaticKeepAliveClientMixin<SettingTab> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     double deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
@@ -74,6 +83,9 @@ class SettingTab extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 /* Send Feeback */
