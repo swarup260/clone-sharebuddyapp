@@ -91,7 +91,7 @@ Future<dynamic> handShake() async {
   bool _status = false;
   // Check Token Set or Not
   if (await _getMobileToken() == "") {
-    Map<String, String> query = {"deviceId": "123"};
+    Map<String, String> query = {"deviceId": await _getDeviceIdentity()};
     final response =
         await ajaxGet(getApiEndpoint(endpoint.getToken), query: query);
     if (response.statusCode == 200) {
