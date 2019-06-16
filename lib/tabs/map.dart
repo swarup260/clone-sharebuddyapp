@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:location/location.dart';
 import 'package:share_buddy/widget/result_card.dart';
 import '../models/GetLocation.dart';
@@ -126,12 +127,13 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
             double cardwidth = MediaQuery.of(context).size.width * 0.7;
+            double cardHeight = MediaQuery.of(context).size.height / 2;
             return Container(
-              height: 50,
+              height: cardHeight,
               width: cardwidth,
               child: new ResultCard(
                 object: locationList[index],
-                fontSize: 10.0,
+                fontSize: 12.0,
                 priceSize: 15.0,
                 imageSize: 15.0,
                 iconFlag: false,
@@ -165,7 +167,8 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         mapType: MapType.normal,
         rotateGesturesEnabled: true,
         zoomGesturesEnabled: true,
-        // myLocationEnabled: true,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: false,
         gestureRecognizers: Set()
           ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
         markers: _markers(data),
@@ -194,9 +197,21 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
           infoWindow: InfoWindow(title: value.landmark),
           icon: BitmapDescriptor.fromAsset(value.type == 'auto'
               ? 'assets/images/auto_150.png'
-              : 'assets/images/taxi_150.png')));
+              : 'assets/images/taxi_150.png'),
+          onTap: () {
+            _launchURL(
+                "google.navigation:q=${value.location.coordinates[1]},${value.location.coordinates[0]}");
+          }));
     });
     return markerSet;
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
