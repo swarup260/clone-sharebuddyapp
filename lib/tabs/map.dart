@@ -84,7 +84,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         },
       ),
       floatingActionButton: Align(
-        alignment: Alignment(1, 0.6),
+        alignment: Alignment(1, 0.5),
         child: FloatingActionButton(
           onPressed: () async {
             LocationData pos = await location.getLocation();
@@ -101,13 +101,15 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Align admodWidget() {
-    return Align(
-      alignment: Alignment.topLeft,
+  Widget admodWidget() {
+    return SafeArea(
+      child: Align(
+      alignment: Alignment.topCenter,
       child: AdmobBanner(
-        adUnitId: getBannerAdUnitId(bannerAdType.BANNER),
-        adSize: AdmobBannerSize.BANNER,
+        adUnitId: getBannerAdUnitId(bannerAdType.FULL_BANNER),
+        adSize: AdmobBannerSize.FULL_BANNER,
       ),
+      )
     );
   }
 
@@ -116,7 +118,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
       alignment: Alignment.bottomLeft,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 20.0),
-        height: 80.0,
+        height: MediaQuery.of(context).size.height / 6,
         child: ListView.separated(
           separatorBuilder: (BuildContext context, int index) {
             return SizedBox(
@@ -129,7 +131,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
             double cardwidth = MediaQuery.of(context).size.width * 0.7;
             double cardHeight = MediaQuery.of(context).size.height / 2;
             return Container(
-              height: cardHeight,
+              height: 300.0,
               width: cardwidth,
               child: new ResultCard(
                 object: locationList[index],

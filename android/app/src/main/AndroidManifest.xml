@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="share_buddy"
+        android:label="ShareBuddy"
         android:icon="@mipmap/ic_launcher">
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <activity
