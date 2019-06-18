@@ -218,6 +218,12 @@ class CustomAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               GestureDetector(
+                  child: Icon(FontAwesomeIcons.globe, size: 25),
+                  onTap: () {
+                    _launchURL("https://www.sharebuddyapp.com/");
+                  }),
+              SizedBox(width: 20),
+              GestureDetector(
                   child: Icon(FontAwesomeIcons.facebook, size: 25),
                   onTap: () {
                     _launchURL("https://www.facebook.com/sharebuddyapp/");
