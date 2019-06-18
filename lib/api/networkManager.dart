@@ -57,6 +57,8 @@ Future<String> getDeviceIdentity() async => _getDeviceIdentity();
 
 Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
+Future<SharedPreferences> getPrefs() => _prefs;
+
 Future<String> _getMobileToken() async {
   final SharedPreferences prefs = await _prefs;
 
@@ -114,7 +116,7 @@ Future<dynamic> handShake() async {
 /// ----------------------------------------------------------
 /// Http "GET" request
 /// ----------------------------------------------------------
-Future<dynamic> ajaxGet(String serviceName, {Map query = null}) async {
+Future<dynamic> ajaxGet(String serviceName, {Map query}) async {
   try {
     final response =
         await http.get(Uri.http(_urlBase, serviceName, query), headers: {
