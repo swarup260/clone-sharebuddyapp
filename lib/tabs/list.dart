@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:admob_flutter/admob_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/GetLocation.dart';
 import '../models/GetLocationList.dart';
@@ -377,6 +378,10 @@ class SearchResultPanel extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return ResultCard(
                 object: getLocationResponse[index],
+                callback: () {
+                  _launchURL(
+                      "google.navigation:q=${getLocationResponse[index].location.coordinates[1]},${getLocationResponse[index].location.coordinates[0]}");
+                },
                 // fontSize: 16.0,
                 // priceSize: 25.0,
                 // imageSize: 35,
@@ -384,6 +389,14 @@ class SearchResultPanel extends StatelessWidget {
             })
       ],
     );
+  }
+
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 /* 
