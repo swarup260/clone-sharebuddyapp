@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:location/location.dart';
-import 'package:share_buddy/widget/result_card.dart';
+
+import '../widget/result_card.dart';
 import '../models/GetLocation.dart';
 import '../api/apiEndpoint.dart';
 import '../api/networkManager.dart';

@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'tabs/map.dart';
 import 'tabs/list.dart';
