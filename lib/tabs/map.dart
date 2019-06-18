@@ -104,14 +104,13 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
 
   Widget admodWidget() {
     return SafeArea(
-      child: Align(
+        child: Align(
       alignment: Alignment.topCenter,
       child: AdmobBanner(
         adUnitId: getBannerAdUnitId(bannerAdType.FULL_BANNER),
         adSize: AdmobBannerSize.FULL_BANNER,
       ),
-      )
-    );
+    ));
   }
 
   Align buildAlign(List<Datum> locationList) {
@@ -199,7 +198,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
               value.location.coordinates[1], value.location.coordinates[0]),
           infoWindow: InfoWindow(title: value.landmark),
           icon: BitmapDescriptor.fromAsset(value.type == 'auto'
-              ? 'assets/images/auto_150.png'
+              ? 'assets/images/auto_100.png'
               : 'assets/images/taxi_150.png'),
           onTap: () {
             _launchURL(
