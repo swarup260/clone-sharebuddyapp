@@ -141,7 +141,10 @@ class _SendFeedbackState extends State<SendFeedback> {
       ),
       actions: <Widget>[
         FlatButton(
-          child: Icon(Icons.send),
+          child: Icon(
+            Icons.send,
+            color: Theme.of(context).primaryColor,
+          ),
           onPressed: () async {
             if (_formKey.currentState.validate()) {
               /* post Data to Server */
