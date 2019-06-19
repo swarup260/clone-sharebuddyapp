@@ -19,19 +19,23 @@ class AboutUsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                "ShareBubby".toUpperCase(),
+                "ShareBuddy".toUpperCase(),
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
               Text('Version 1.0.0'),
-              Icon(
-                FontAwesomeIcons.car,
-                size: 100,
+              SizedBox(
+                height: 10.0,
               ),
+              CircleAvatar(
+                  backgroundColor: Color(0xFFf7fbff),
+                  backgroundImage: AssetImage('assets/images/logo.png'),
+                  radius: 80.0,
+                ),
               SizedBox(
                 height: 20,
               ),
-              Text(' 2019-2040 ShareBubby Inc.'),
+              Text('2019 \u00a9 ShareBuddy'),
               Text('All right reserved.'),
               SizedBox(
                 height: 40,
