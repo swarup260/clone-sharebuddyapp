@@ -217,32 +217,42 @@ class CustomAppBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              GestureDetector(
-                  child: Icon(FontAwesomeIcons.globe, size: 25),
-                  onTap: () {
-                    _launchURL("https://www.sharebuddyapp.com/");
-                  }),
+              InkWell(
+                child: Icon(FontAwesomeIcons.globe, size: 25),
+                onTap: () {
+                  _launchURL("https://www.sharebuddyapp.com/");
+                },
+                splashColor: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
               SizedBox(width: 20),
-              GestureDetector(
-                  child: Icon(FontAwesomeIcons.facebook, size: 25),
-                  onTap: () {
-                    _launchURL("https://www.facebook.com/sharebuddyapp/");
-                  }),
+              InkWell(
+                child: Icon(FontAwesomeIcons.facebook, size: 25),
+                onTap: () {
+                  _launchURL("https://www.facebook.com/sharebuddyapp/");
+                },
+                splashColor: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
               SizedBox(width: 20),
-              GestureDetector(
+              InkWell(
                 child: Icon(FontAwesomeIcons.twitter, size: 25),
                 onTap: () {
                   _launchURL("https://www.twitter.com");
                 },
+                splashColor: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
               SizedBox(
                 width: 20,
               ),
-              GestureDetector(
+              InkWell(
                 child: Icon(FontAwesomeIcons.instagram, size: 25),
                 onTap: () {
                   _launchURL("https://www.instagram.com/sharebuddyapp/");
                 },
+                splashColor: Colors.black54,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               )
             ],
           )
