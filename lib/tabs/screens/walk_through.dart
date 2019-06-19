@@ -42,11 +42,11 @@ class WalkthroughBodyState extends State<WalkthroughBody> {
   void _pageListener() {
     if (_pageController.hasClients) {
       setState(() {
-        if (_pageController.page.toInt() == (pages.length - 1)) {
+        /* if (_pageController.page.toInt() == (pages.length - 1)) {
           _bottomState = CrossFadeState.showSecond;
         } else {
           _bottomState = CrossFadeState.showFirst;
-        }
+        } */
       });
     }
   }
@@ -94,6 +94,13 @@ CircleAvatar(
                 ),
               ],
             );
+          },
+          onPageChanged: (int index) {
+            if (index == (pages.length - 1)) {
+              _bottomState = CrossFadeState.showSecond;
+            } else {
+              _bottomState = CrossFadeState.showFirst;
+            }
           },
         ),
         Align(

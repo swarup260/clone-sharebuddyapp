@@ -87,6 +87,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
       floatingActionButton: Align(
         alignment: Alignment(1, 0.5),
         child: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
           onPressed: () async {
             LocationData pos = await location.getLocation();
             setState(() {
@@ -96,7 +97,10 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
                       zoom: 15.0)));
             });
           },
-          child: Icon(Icons.my_location),
+          child: Icon(
+            Icons.my_location,
+            color: Colors.black,
+          ),
         ),
       ),
     );
@@ -129,9 +133,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) {
             double cardwidth = MediaQuery.of(context).size.width * 0.7;
-            double cardHeight = MediaQuery.of(context).size.height / 2;
             return Container(
-              height: 300.0,
               width: cardwidth,
               child: new ResultCard(
                 object: locationList[index],
