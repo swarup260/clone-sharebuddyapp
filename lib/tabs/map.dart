@@ -22,13 +22,9 @@ class MapTab extends StatefulWidget {
 
 class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   Location location = new Location();
-
+  LocationData pos;
   List<Datum> locationList = [];
-
-  // void initState() {
-  //   super.initState();
-  //   // getLocation(5);
-  // }
+  Set<Marker> _markerSet = <Marker>{};
 
   Future<List<Datum>> getLocation(int distance) async {
     try {
@@ -58,31 +54,32 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
     ));
     super.build(context);
     return Scaffold(
-      body: FutureBuilder(
-        future: getLocation(5),
-        initialData: locationList,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasError) {
-            return AlertDialog(
-              content: Text("Network Error"),
-            );
-          }
-          if (snapshot.data.length > 0) {
-            return Stack(
-              children: <Widget>[
-                _googleMap(context, snapshot.data),
-                admodWidget(),
-                buildAlign(snapshot.data)
-              ],
-            );
-          } else {
-            return Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-        },
+      body: Stack(
+        children: <Widget>[
+          _googleMap(context),
+          admodWidget(),
+          FutureBuilder(
+            future: getLocation(5),
+            initialData: locationList,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasError) {
+                return AlertDialog(
+                  content: Text("Network Error"),
+                );
+              }
+              if (snapshot.data.length > 0) {
+                return buildAlign(snapshot.data);
+              } else {
+                return Container(
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+            },
+          )
+          // buildAlign(snapshot.data)
+        ],
       ),
       floatingActionButton: Align(
         alignment: Alignment(1, 0.5),
@@ -158,7 +155,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Widget _googleMap(BuildContext context, List<Datum> data) {
+  Widget _googleMap(BuildContext context) {
     final double deviceHeight = MediaQuery.of(context).size.height;
     final double deviceWidth = MediaQuery.of(context).size.width;
     return Container(
@@ -175,18 +172,20 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         myLocationButtonEnabled: false,
         gestureRecognizers: Set()
           ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
-        markers: _markers(data),
+        markers: _markerSet,
       ),
     );
   }
 
   /* _omMapCreated Controller  */
-  void _onMapCreated(GoogleMapController controller) async {
+  Future<void> _onMapCreated(GoogleMapController controller) async {
     LocationData pos = await location.getLocation();
+    List<Datum> results = await getLocation(5);
     setState(() {
       mapController = controller;
       mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: LatLng(pos.latitude, pos.longitude), zoom: 15.0)));
+      _markerSet = _markers(results);
     });
   }
 
