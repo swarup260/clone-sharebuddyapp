@@ -223,7 +223,7 @@ class CustomAppBar extends StatelessWidget {
               InkWell(
                 child: Icon(FontAwesomeIcons.globe, size: 25),
                 onTap: () {
-                  _launchURL("https://www.sharebuddyapp.com/");
+                  _launchURL("http://www.sharebuddyapp.com/");
                 },
                 splashColor: Colors.black54,
                 borderRadius: BorderRadius.all(Radius.circular(10)),
