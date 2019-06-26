@@ -1,4 +1,4 @@
-package com.example.share_buddy;
+package com.sharebuddyapp.sharebuddyapp;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
