@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,6 +45,26 @@ class MyApp extends StatelessWidget {
 
   Future<bool> isShowWalkThrough() async {
     final SharedPreferences prefs = await getPrefs();
+    final getIsregisterUser = prefs.getBool("isregisterUser") ?? false;
+    if (!getIsregisterUser) {
+      final isregisterUser = await registerUser();
+      prefs.setBool("isregisterUser", isregisterUser);
+    }
+
     return prefs.getBool("walkThroughView") ?? false;
+  }
+
+  Future<bool> registerUser() async {
+    final deviceId = await getDeviceIdentity();
+    try {
+      final result = await ajaxPost(getApiEndpoint(endpoint.register), {
+        "deviceId": deviceId,
+        "deviceType": Platform.isAndroid ? "android" : "ios",
+        "pushTokenId": "testing"
+      });
+      return result.status;
+    } catch (e) {
+      return false;
+    }
   }
 }
