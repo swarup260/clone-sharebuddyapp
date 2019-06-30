@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Licenses.dart';
 
 class AboutUsPage extends StatelessWidget {
@@ -28,10 +29,10 @@ class AboutUsPage extends StatelessWidget {
                 height: 10.0,
               ),
               CircleAvatar(
-                  backgroundColor: Color(0xFFf7fbff),
-                  backgroundImage: AssetImage('assets/images/logo.png'),
-                  radius: 80.0,
-                ),
+                backgroundColor: Color(0xFFf7fbff),
+                backgroundImage: AssetImage('assets/images/logo.png'),
+                radius: 80.0,
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -41,13 +42,17 @@ class AboutUsPage extends StatelessWidget {
                 height: 40,
               ),
               GestureDetector(
-                child: Text(
-                  'licenses'.toUpperCase(),
-                  style: TextStyle(color: Colors.blue),
+                child: Container(
+                  height: 20.0,
+                  width: MediaQuery.of(context).size.width,
+                  child: Text(
+                    'licenses'.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => new Licenses()));
+                  _launchURL("http://www.sharebuddyapp.com/licenses");
                 },
               )
             ],
@@ -55,5 +60,13 @@ class AboutUsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+void _launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

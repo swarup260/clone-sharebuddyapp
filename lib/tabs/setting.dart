@@ -7,7 +7,6 @@ import 'package:share/share.dart';
 import '../models/getMessage.dart';
 import '../api/apiEndpoint.dart';
 import '../api/networkManager.dart';
-import '../tabs/screens/term_privacy_info.dart';
 import '../tabs/screens/about_us.dart';
 
 class SettingTab extends StatefulWidget {
@@ -67,10 +66,8 @@ class _SettingTabState extends State<SettingTab>
                     icons: Icons.vpn_key,
                     settingTab: "Term and Privacy Policy",
                     callback: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => new TermPrivacyTab()));
+                      _launchURL(
+                          "http://www.sharebuddyapp.com/term_privacy_policy");
                     }),
                 MeunTab(
                   icons: FontAwesomeIcons.info,
@@ -263,14 +260,6 @@ class CustomAppBar extends StatelessWidget {
       ),
     );
   }
-
-  void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
 }
 
 /* MeunTab Setting Tab */
@@ -366,6 +355,13 @@ class _ReceiveNotificationState extends State<ReceiveNotification> {
   }
 }
 
+void _launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 /* 
 
 Container(
