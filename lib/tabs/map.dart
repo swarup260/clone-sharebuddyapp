@@ -138,8 +138,8 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
                 object: locationList[index],
                 fontSize: 12.0,
                 priceSize: 15.0,
-                imageSize: 15.0,
-                iconFlag: false,
+                //imageSize: 15.0,
+                iconFlag: true,
                 callback: () {
                   mapController.animateCamera(CameraUpdate.newCameraPosition(
                       CameraPosition(

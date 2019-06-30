@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "368544941773",
+    "firebase_url": "https://sharebuddyapp-dev.firebaseio.com",
+    "project_id": "sharebuddyapp-dev",
+    "storage_bucket": "sharebuddyapp-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368544941773:android:cf64f42121b31ae8",
+        "android_client_info": {
+          "package_name": "com.sharebuddyapp.sharebuddyapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368544941773-4opls15vrqeki5p7rddb0qrapol5ueoh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFNztYDF33nYm-KV0y7FulKt-alacuwQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368544941773-4opls15vrqeki5p7rddb0qrapol5ueoh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
