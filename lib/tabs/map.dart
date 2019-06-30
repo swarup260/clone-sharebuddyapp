@@ -39,6 +39,8 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
       GetLocation result = getLocationFromJson(httpResponse);
       if (result.status) {
         return result.data;
+      } else {
+        throw Exception("Network Error");
       }
     } catch (e) {
       throw e;
