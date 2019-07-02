@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -5,6 +6,7 @@ import '../../home.dart';
 import '../../models/PageModel.dart';
 import '../../widget/page_indicator.dart';
 import '../../api/networkManager.dart';
+import '../../api/apiEndpoint.dart';
 
 class Walkthrough extends StatelessWidget {
   @override
@@ -37,6 +39,32 @@ class WalkthroughBodyState extends State<WalkthroughBody> {
     super.dispose();
     _pageController.removeListener(_pageListener);
     _pageController.dispose();
+    registerUser().then((value) async {
+      final SharedPreferences prefs = await getPrefs();
+      final getIsregisterUser = prefs.getBool("isregisterUser") ?? false;
+      if (!getIsregisterUser) {
+        final isregisterUser = await registerUser();
+        prefs.setBool("isregisterUser", isregisterUser);
+      }
+    }).catchError((onError) {
+      AlertDialog(
+        content: Text("Network Error"),
+      );
+    });
+  }
+
+  Future<bool> registerUser() async {
+    final deviceId = await getDeviceIdentity();
+    try {
+      final result = await ajaxPost(getApiEndpoint(endpoint.register), {
+        "deviceId": deviceId,
+        "deviceType": Platform.isAndroid ? "android" : "ios",
+        "pushTokenId": "testing"
+      });
+      return result.status;
+    } catch (e) {
+      return false;
+    }
   }
 
   void _pageListener() {
