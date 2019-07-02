@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:location/location.dart';
+// import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../widget/result_card.dart';
 import '../models/GetLocation.dart';
@@ -21,37 +22,23 @@ class MapTab extends StatefulWidget {
 }
 
 class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
-  Location location = new Location();
-  LocationData pos;
-  List<Datum> locationList = [];
-  Set<Marker> _markerSet = <Marker>{};
+  Future<Position> currentLocation;
+  GoogleMapController mapController;
+  Set<Marker> markers;
 
-  Future<List<Datum>> getLocation(int distance) async {
-    try {
-      LocationData pos = await location.getLocation();
-
-      var httpResponse = await ajaxPost(
-          getApiEndpoint(endpoint.getLocationFromCurrent), {
-        'distance': distance,
-        'latitude': pos.latitude,
-        'longitude': pos.longitude
-      });
-      GetLocation result = getLocationFromJson(httpResponse);
-      if (result.status) {
-        return result.data;
-      }
-    } catch (e) {
-      throw e;
-    }
+  void initState() {
+    currentLocation = getUserLoc();
+    super.initState();
   }
 
-  GoogleMapController mapController;
+  Future<Position> getUserLoc() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest);
+    return position;
+  }
+
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: Theme.of(context)
-          .primaryColorDark, //or set color with: Color(0xFF0000FF)
-    ));
     super.build(context);
     return Scaffold(
       body: Stack(
@@ -59,26 +46,18 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
           _googleMap(context),
           admodWidget(),
           FutureBuilder(
-            future: getLocation(5),
-            initialData: locationList,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasError) {
-                return AlertDialog(
-                  content: Text("Network Error"),
+            future: locationList(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Datum>> snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
-              }
-              if (snapshot.data.length > 0) {
-                return buildAlign(snapshot.data);
               } else {
-                return Container(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+                return buildAlign(snapshot.data);
               }
             },
           )
-          // buildAlign(snapshot.data)
         ],
       ),
       floatingActionButton: Align(
@@ -86,13 +65,11 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () async {
-            LocationData pos = await location.getLocation();
-            setState(() {
-              mapController.animateCamera(CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                      target: LatLng(pos.latitude, pos.longitude),
-                      zoom: 15.0)));
-            });
+            Position pos = await currentLocation;
+            mapController.animateCamera(CameraUpdate.newCameraPosition(
+                CameraPosition(
+                    target: LatLng(pos.latitude, pos.longitude), zoom: 15.0)));
+            // setState(() {});
           },
           child: Icon(
             Icons.my_location,
@@ -101,6 +78,59 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         ),
       ),
     );
+  }
+
+  Future<List<Datum>> locationList() async {
+    try {
+      Position location = await currentLocation;
+      var httpResponse = await ajaxPost(
+          getApiEndpoint(endpoint.getLocationFromCurrent), {
+        'distance': 5,
+        'latitude': location.latitude,
+        'longitude': location.longitude
+      });
+      GetLocation result = getLocationFromJson(httpResponse);
+      if (result.status) {
+        return result.data;
+      } else {
+        throw Exception("Network Error");
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Widget _googleMap(BuildContext context) {
+    final double deviceHeight = MediaQuery.of(context).size.height;
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    return Container(
+      height: deviceHeight,
+      width: deviceWidth,
+      child: GoogleMap(
+        initialCameraPosition:
+            CameraPosition(target: LatLng(19.0760, 72.8777), zoom: 15),
+        onMapCreated: _onMapCreated,
+        mapType: MapType.normal,
+        rotateGesturesEnabled: true,
+        zoomGesturesEnabled: true,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: false,
+        gestureRecognizers: Set()
+          ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
+        markers: markers,
+      ),
+    );
+  }
+
+  Future<void> _onMapCreated(GoogleMapController controller) async {
+    final result = await locationList();
+    Position pos = await currentLocation;
+    setState(() {
+      mapController = controller;
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(pos.latitude, pos.longitude), zoom: 15.0)));
+      markers = _markers(result);
+    });
   }
 
   Widget admodWidget() {
@@ -153,40 +183,6 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         ),
       ),
     );
-  }
-
-  Widget _googleMap(BuildContext context) {
-    final double deviceHeight = MediaQuery.of(context).size.height;
-    final double deviceWidth = MediaQuery.of(context).size.width;
-    return Container(
-      height: deviceHeight,
-      width: deviceWidth,
-      child: GoogleMap(
-        initialCameraPosition:
-            CameraPosition(target: LatLng(19.0760, 72.8777), zoom: 15),
-        onMapCreated: _onMapCreated,
-        mapType: MapType.normal,
-        rotateGesturesEnabled: true,
-        zoomGesturesEnabled: true,
-        myLocationEnabled: true,
-        myLocationButtonEnabled: false,
-        gestureRecognizers: Set()
-          ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
-        markers: _markerSet,
-      ),
-    );
-  }
-
-  /* _omMapCreated Controller  */
-  Future<void> _onMapCreated(GoogleMapController controller) async {
-    LocationData pos = await location.getLocation();
-    List<Datum> results = await getLocation(5);
-    setState(() {
-      mapController = controller;
-      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-          target: LatLng(pos.latitude, pos.longitude), zoom: 15.0)));
-      _markerSet = _markers(results);
-    });
   }
 
   Set<Marker> _markers(List<Datum> locationList) {
