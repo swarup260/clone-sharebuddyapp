@@ -100,26 +100,28 @@ CircleAvatar(
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 100.0),
-                Container(
-                  height: 250.0,
-                  width: 150.0,
-                  child: Image.asset(pages[index].assetImagePath),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(4))),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 50.0, left: 60.0, right: 40.0, bottom: 100.0),
-                  child: Text(
-                    pages[index].text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColorDark,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20.0),
+                //SizedBox(height: 100.0),
+                SafeArea(
+                  child: Container(
+                    height: 550.0,
+                    width: 350.0,
+                    child: Image.asset(pages[index].assetImagePath),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
                   ),
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.only(
+                //       top: 50.0, left: 60.0, right: 40.0, bottom: 100.0),
+                //   child: Text(
+                //     pages[index].text,
+                //     textAlign: TextAlign.center,
+                //     style: TextStyle(
+                //         color: Theme.of(context).primaryColorDark,
+                //         fontWeight: FontWeight.w600,
+                //         fontSize: 20.0),
+                //   ),
+                // ),
               ],
             );
           },
