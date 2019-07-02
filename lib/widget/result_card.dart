@@ -1,16 +1,17 @@
 /* Search Result Card */
 import 'package:flutter/material.dart';
+import '../models/GetLocation.dart';
 
 class ResultCard extends StatelessWidget {
   final Widget child;
-  var object;
+  final Datum object;
   final double fontSize;
   final double imageSize;
   final double priceSize;
   final bool iconFlag;
   final double containerHeight;
   final double containerWidth;
-  Function callback;
+  final Function callback;
   ResultCard(
       {Key key,
       this.child,

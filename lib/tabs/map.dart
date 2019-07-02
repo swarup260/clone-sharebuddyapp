@@ -2,7 +2,6 @@ import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:url_launcher/url_launcher.dart';
