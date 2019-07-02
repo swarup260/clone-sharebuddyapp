@@ -32,10 +32,6 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   }
 
   Future<Position> getUserLoc() async {
-    if (!(await Geolocator().isLocationServiceEnabled())) {
-      await LocationPermissions().requestPermissions(
-          permissionLevel: LocationPermissionLevel.location);
-    }
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
     return position;
