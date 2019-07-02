@@ -4,8 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location_permissions/location_permissions.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../widget/result_card.dart';
@@ -32,8 +32,12 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   }
 
   Future<Position> getUserLoc() async {
+    if (!(await Geolocator().isLocationServiceEnabled())) {
+      await LocationPermissions().requestPermissions(
+          permissionLevel: LocationPermissionLevel.location);
+    }
     Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.lowest);
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
     return position;
   }
 
@@ -46,9 +50,21 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
           _googleMap(context),
           admodWidget(),
           FutureBuilder(
-            future: locationList(),
+            future: locationList(5),
             builder:
                 (BuildContext context, AsyncSnapshot<List<Datum>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.none) {
+                return AlertDialog(
+                  content: Text("Network Error."),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return AlertDialog(
+                  content: Text("Network Error."),
+                );
+              }
+
               if (!snapshot.hasData) {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -80,12 +96,12 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  Future<List<Datum>> locationList() async {
+  Future<List<Datum>> locationList(int distance) async {
     try {
       Position location = await currentLocation;
-      var httpResponse = await ajaxPost(
-          getApiEndpoint(endpoint.getLocationFromCurrent), {
-        'distance': 5,
+      var httpResponse =
+          await ajaxPost(getApiEndpoint(endpoint.getLocationFromCurrent), {
+        'distance': distance,
         'latitude': location.latitude,
         'longitude': location.longitude
       });
@@ -123,7 +139,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   }
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final result = await locationList();
+    final result = await locationList(5);
     Position pos = await currentLocation;
     setState(() {
       mapController = controller;
