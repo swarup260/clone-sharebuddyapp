@@ -31,10 +31,10 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   }
 
   Future<Position> getUserLoc() async {
-    if (!(await Geolocator().isLocationServiceEnabled())) {
+    /* if (!(await Geolocator().isLocationServiceEnabled())) {
       await LocationPermissions().requestPermissions(
           permissionLevel: LocationPermissionLevel.location);
-    }
+    } */
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
     return position;
@@ -60,7 +60,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
 
               if (snapshot.hasError) {
                 return AlertDialog(
-                  content: Text("Network Error."),
+                  content: Text(snapshot.error.toString()),
                 );
               }
 
@@ -110,6 +110,8 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
       } else {
         throw Exception("Network Error");
       }
+    } on NoSuchMethodError catch (e) {
+      throw Exception("Please enable location services");
     } catch (e) {
       throw Exception(e);
     }

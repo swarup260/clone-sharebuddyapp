@@ -150,6 +150,6 @@ Future<dynamic> ajaxPost(String serviceName, Map data) async {
     }
   } catch (e) {
     // An error was received
-    throw new Exception("POST AJAX ERROR");
+    throw new Exception("Network Error");
   }
 }
