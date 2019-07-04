@@ -50,7 +50,7 @@ class AboutUsPage extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  _launchURL("http://www.sharebuddyapp.com/licenses");
+                  _launchURL("http://www.sharebuddyapp.com/licenses.html");
                 },
               )
             ],

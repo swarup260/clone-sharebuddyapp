@@ -42,6 +42,14 @@ class _SettingTabState extends State<SettingTab>
                     icons: Icons.notifications,
                     settingTab: "Receive Notification"), */
                 MeunTab(
+                  icons: FontAwesomeIcons.locationArrow,
+                  settingTab: "Add Location",
+                  callback: () {
+                    _launchURL("http://sharebuddy-addlocation.herokuapp.com/");
+                  },
+                  flag: true,
+                ),
+                MeunTab(
                   icons: Icons.share,
                   settingTab: "Share",
                   callback: () {
@@ -67,7 +75,7 @@ class _SettingTabState extends State<SettingTab>
                     settingTab: "Term and Privacy Policy",
                     callback: () {
                       _launchURL(
-                          "http://www.sharebuddyapp.com/term_privacy_policy");
+                          "http://www.sharebuddyapp.com/term_privacy_policy.html");
                     }),
                 MeunTab(
                   icons: FontAwesomeIcons.info,
@@ -265,27 +273,41 @@ class CustomAppBar extends StatelessWidget {
 /* MeunTab Setting Tab */
 class MeunTab extends StatelessWidget {
   const MeunTab(
-      {Key key, @required this.icons, @required this.settingTab, this.callback})
+      {Key key,
+      @required this.icons,
+      @required this.settingTab,
+      this.callback,
+      this.flag = false})
       : super(key: key);
 
   final IconData icons;
   final String settingTab;
   final Function callback;
+  final bool flag;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(14.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Icon(icons),
-              Padding(
-                child: Text(settingTab),
-                padding: EdgeInsets.only(left: 10.0),
-              )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Icon(icons),
+                  Padding(
+                    child: Text(settingTab),
+                    padding: EdgeInsets.only(left: 10.0),
+                  ),
+                ],
+              ),
+              if (flag)
+                Flexible(
+                  child: Icon(Icons.new_releases, size: 25),
+                )
             ],
           ),
         ),
