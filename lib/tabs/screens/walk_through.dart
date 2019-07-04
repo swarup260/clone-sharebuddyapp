@@ -103,8 +103,8 @@ CircleAvatar(
                 //SizedBox(height: 100.0),
                 SafeArea(
                   child: Container(
-                    height: 550.0,
-                    width: 350.0,
+                    height: MediaQuery.of(context).size.height  * 0.80,
+                    width: MediaQuery.of(context).size.width  * 1.0,
                     child: Image.asset(pages[index].assetImagePath),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(4))),
