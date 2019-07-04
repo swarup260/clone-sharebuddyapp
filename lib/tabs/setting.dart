@@ -75,7 +75,7 @@ class _SettingTabState extends State<SettingTab>
                     settingTab: "Term and Privacy Policy",
                     callback: () {
                       _launchURL(
-                          "http://www.sharebuddyapp.com/term_privacy_policy.html");
+                          "https://www.sharebuddyapp.com/term_privacy_policy.html");
                     }),
                 MeunTab(
                   icons: FontAwesomeIcons.info,
@@ -228,7 +228,7 @@ class CustomAppBar extends StatelessWidget {
               InkWell(
                 child: Icon(FontAwesomeIcons.globe, size: 25),
                 onTap: () {
-                  _launchURL("http://www.sharebuddyapp.com/");
+                  _launchURL("https://www.sharebuddyapp.com/");
                 },
                 splashColor: Colors.black54,
                 borderRadius: BorderRadius.all(Radius.circular(10)),
