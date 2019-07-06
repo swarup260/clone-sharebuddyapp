@@ -140,12 +140,15 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   Future<void> _onMapCreated(GoogleMapController controller) async {
     final result = await locationList(5);
     Position pos = await currentLocation;
-    setState(() {
-      mapController = controller;
-      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-          target: LatLng(pos.latitude, pos.longitude), zoom: 15.0)));
-      markers = _markers(result);
-    });
+    if (mounted) {
+      setState(() {
+        mapController = controller;
+        mapController.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: LatLng(pos.latitude, pos.longitude), zoom: 15.0)));
+        markers = _markers(result);
+      });
+    }
   }
 
   Widget admodWidget() {
