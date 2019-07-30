@@ -4,8 +4,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_permissions/location_permissions.dart';
+import 'package:sharebuddyapp/models/MyConnectivity.dart';
+import 'package:sharebuddyapp/widget/network_error.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:connectivity/connectivity.dart';
 
 import '../widget/result_card.dart';
 import '../models/GetLocation.dart';
@@ -25,9 +28,17 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   GoogleMapController mapController;
   Set<Marker> markers;
 
+  Map _source = {ConnectivityResult.none: false};
+  MyConnectivity _connectivity = MyConnectivity.instance;
+
+  @override
   void initState() {
     currentLocation = getUserLoc();
     super.initState();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
+    });
   }
 
   Future<Position> getUserLoc() async {
@@ -43,6 +54,12 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        return NetworkError();
+        break;
+    }
+
     return Scaffold(
       body: Stack(
         children: <Widget>[

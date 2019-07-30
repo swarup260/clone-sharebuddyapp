@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:admob_flutter/admob_flutter.dart';
+import 'package:sharebuddyapp/models/MyConnectivity.dart';
+import 'package:sharebuddyapp/widget/network_error.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:connectivity/connectivity.dart';
 
 import '../models/GetLocation.dart';
 import '../models/GetLocationList.dart';
@@ -45,6 +48,9 @@ class _SearchPanelState extends State<SearchPanel>
     adUnitId: getInterstitialAdUnitId(),
   );
 
+  Map _source = {ConnectivityResult.none: false};
+  MyConnectivity _connectivity = MyConnectivity.instance;
+
   List<Datum> locationList = List();
   List locationNameList = List();
 
@@ -58,6 +64,15 @@ class _SearchPanelState extends State<SearchPanel>
 
   final TextEditingController fromController = new TextEditingController();
   final TextEditingController toController = new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
+    });
+  }
 
   // Fetch data from api
   _fetchData() async {
@@ -115,6 +130,18 @@ class _SearchPanelState extends State<SearchPanel>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        return NetworkError();
+        break;
+      // case ConnectivityResult.mobile:
+      //   string = "Mobile: Online";
+      //   break;
+      // case ConnectivityResult.wifi:
+      //   string = "WiFi: Online";
+    }
+
     return Stack(
       children: <Widget>[
         Column(
@@ -399,21 +426,3 @@ class SearchResultPanel extends StatelessWidget {
     }
   }
 }
-/* 
-resultCard(
-                getLocationResponse[index].from.toUpperCase(),
-                getLocationResponse[index].to.toUpperCase(),
-                getLocationResponse[index].landmark.toUpperCase(),
-                getLocationResponse[index].price,
-                getLocationResponse[index].kilometer + " KM",
-                getLocationResponse[index].type == "auto"
-                    ? 'assets/images/auto.png'
-                    : 'assets/images/taxi.png',
-                getLocationResponse[index].verified
-                    ? Colors.lightGreen
-                    : Colors.redAccent,
-              )
-
-
-
- */
