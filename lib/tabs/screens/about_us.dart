@@ -39,7 +39,7 @@ class AboutUsPage extends StatelessWidget {
               SizedBox(
                 height: 40,
               ),
-              GestureDetector(
+              /* GestureDetector(
                 child: Container(
                   height: 20.0,
                   width: MediaQuery.of(context).size.width,
@@ -52,7 +52,7 @@ class AboutUsPage extends StatelessWidget {
                 onTap: () {
                   _launchURL("https://www.sharebuddyapp.com/licenses.html");
                 },
-              )
+              ) */
             ],
           ),
         ),
