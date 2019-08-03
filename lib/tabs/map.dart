@@ -69,7 +69,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
             future: locationList(5),
             builder:
                 (BuildContext context, AsyncSnapshot<List<Datum>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.none) {
+              /* if (snapshot.connectionState == ConnectionState.none) {
                 return AlertDialog(
                   content: Text("Network Error."),
                 );
@@ -79,7 +79,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
                 return AlertDialog(
                   content: Text("Network Error."),
                 );
-              }
+              } */
 
               if (!snapshot.hasData) {
                 return Center(
@@ -209,8 +209,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
                           target: LatLng(
                               locationList[index].location.coordinates[1],
                               locationList[index].location.coordinates[0]),
-                          zoom: 20.0,
-                          tilt: 30.0)));
+                          zoom: 20.0)));
                 },
               ),
             );
