@@ -45,7 +45,7 @@ class _SettingTabState extends State<SettingTab>
                   icons: FontAwesomeIcons.locationArrow,
                   settingTab: "Add Location",
                   callback: () {
-                    _launchURL("http://sharebuddy-addlocation.herokuapp.com/");
+                    _launchURL("https://sharebuddyapp.com/add_location.html");
                   },
                   flag: true,
                 ),
@@ -246,7 +246,7 @@ class CustomAppBar extends StatelessWidget {
               InkWell(
                 child: Icon(FontAwesomeIcons.twitter, size: 25),
                 onTap: () {
-                  _launchURL("https://www.twitter.com");
+                  _launchURL("https://twitter.com/sharebuddy_app");
                 },
                 splashColor: Colors.black54,
                 borderRadius: BorderRadius.all(Radius.circular(10)),
