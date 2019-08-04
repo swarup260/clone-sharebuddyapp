@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "368544941773",
-    "firebase_url": "https://sharebuddyapp-dev.firebaseio.com",
-    "project_id": "sharebuddyapp-dev",
-    "storage_bucket": "sharebuddyapp-dev.appspot.com"
+    "project_number": "576799089537",
+    "firebase_url": "https://sharebuddyapp-264d8.firebaseio.com",
+    "project_id": "sharebuddyapp-264d8",
+    "storage_bucket": "sharebuddyapp-264d8.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:368544941773:android:cf64f42121b31ae8",
+        "mobilesdk_app_id": "1:576799089537:android:cf64f42121b31ae8",
         "android_client_info": {
           "package_name": "com.sharebuddyapp.sharebuddyapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "368544941773-4opls15vrqeki5p7rddb0qrapol5ueoh.apps.googleusercontent.com",
+          "client_id": "576799089537-7cpcconq150rfhuscjfgigdivs13lmm1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDFNztYDF33nYm-KV0y7FulKt-alacuwQw"
+          "current_key": "AIzaSyASlMz7LEhLVtD507ZkdPN-WXaJ-IMHuMg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "368544941773-4opls15vrqeki5p7rddb0qrapol5ueoh.apps.googleusercontent.com",
+              "client_id": "576799089537-7cpcconq150rfhuscjfgigdivs13lmm1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

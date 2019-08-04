@@ -33,12 +33,21 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <meta-data
+        <!-- ########## Development ############ -->
+        <!-- <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCFl7tJo20BPyYb78blViWGd8f308nATqE"/>
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/> -->
+            
+        <!-- ########## Production ############ -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBRwd6DfCwQU5NlAbAHiTiQJ7RIAug8h90"/>
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-7185178541812146~4115531377"/>
     </application>
 </manifest>

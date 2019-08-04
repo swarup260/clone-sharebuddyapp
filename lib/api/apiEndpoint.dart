@@ -1,13 +1,29 @@
+/* Development Start */
+// const _baseUrl = "sharebuddy-api.herokuapp.com";
+// const _appId = "ca-app-pub-3940256099942544~3347511713";
+
+// const _banner = "ca-app-pub-3940256099942544/6300978111";
+// const _largeBanner = "ca-app-pub-3940256099942544/6300978111";
+// const _mediumBanner = "ca-app-pub-3940256099942544/6300978111";
+// const _fullBanner = "ca-app-pub-3940256099942544/6300978111";
+// const _leaderboardBanner = "ca-app-pub-3940256099942544/6300978111";
+
+// const _interstitialAd= "ca-app-pub-3940256099942544/1033173712";
+/* Development End */
+
+/* Production Start */
 const _baseUrl = "sharebuddy-api.herokuapp.com";
-const _appId = "ca-app-pub-3940256099942544~3347511713";
+const _appId = "ca-app-pub-7185178541812146~4115531377";
 
-const _banner = "ca-app-pub-3940256099942544/6300978111";
-const _largeBanner = "ca-app-pub-3940256099942544/6300978111";
-const _mediumBanner = "ca-app-pub-3940256099942544/6300978111";
-const _fullBanner = "ca-app-pub-3940256099942544/6300978111";
-const _leaderboardBanner = "ca-app-pub-3940256099942544/6300978111";
+const _banner = "ca-app-pub-7185178541812146/9114854415";
+const _largeBanner = "ca-app-pub-7185178541812146/9114854415";
+const _mediumBanner = "ca-app-pub-7185178541812146/9114854415";
+const _fullBanner = "ca-app-pub-7185178541812146/9114854415";
+const _leaderboardBanner = "ca-app-pub-7185178541812146/9114854415";
 
-const _interstitialAd= "ca-app-pub-3940256099942544/1033173712";
+const _interstitialAd= "ca-app-pub-7185178541812146/5694484159";
+/* Production End */
+
 
 /* Api Enum */
 enum endpoint {
