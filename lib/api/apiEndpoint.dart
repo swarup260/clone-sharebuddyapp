@@ -16,10 +16,10 @@ const _baseUrl = "sharebuddy-api.herokuapp.com";
 const _appId = "ca-app-pub-7185178541812146~4115531377";
 
 const _banner = "ca-app-pub-7185178541812146/9114854415";
-const _largeBanner = "ca-app-pub-7185178541812146/9114854415";
-const _mediumBanner = "ca-app-pub-7185178541812146/9114854415";
-const _fullBanner = "ca-app-pub-7185178541812146/9114854415";
-const _leaderboardBanner = "ca-app-pub-7185178541812146/9114854415";
+const _largeBanner = "ca-app-pub-7185178541812146/4729828794";
+const _mediumBanner = "ca-app-pub-7185178541812146/5887778044";
+const _fullBanner = "ca-app-pub-7185178541812146/7580133669";
+const _leaderboardBanner = "ca-app-pub-7185178541812146/5662694564";
 
 const _interstitialAd= "ca-app-pub-7185178541812146/5694484159";
 /* Production End */
