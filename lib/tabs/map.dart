@@ -14,6 +14,7 @@ import '../widget/result_card.dart';
 import '../models/GetLocation.dart';
 import '../api/apiEndpoint.dart';
 import '../api/networkManager.dart';
+import '../tabs/list.dart';
 
 class MapTab extends StatefulWidget {
   final Widget child;
@@ -86,6 +87,9 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
                   child: CircularProgressIndicator(),
                 );
               } else {
+                if (snapshot.data.length == 0) {
+                  return buildNoLocationCard();
+                }
                 return buildAlign(snapshot.data);
               }
             },
@@ -110,6 +114,34 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
         ),
       ),
     );
+  }
+
+  AlertDialog buildNoLocationCard() {
+    return AlertDialog(
+        content: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      textBaseline: TextBaseline.alphabetic,
+      children: <Widget>[
+        Icon(Icons.not_listed_location),
+        Expanded(
+            child: RichText(
+          text: TextSpan(
+              text: "No SharePoint Location Available Near You. ",
+              style: TextStyle(fontSize: 15.0, color: Colors.black),
+              children: <TextSpan>[
+                TextSpan(
+                    text: "Please Try ListSearch",
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => ListTab()));
+                      }),
+              ]),
+        ))
+      ],
+    ));
   }
 
   Future<List<Datum>> locationList(int distance) async {
