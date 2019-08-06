@@ -336,10 +336,13 @@ class _SearchPanelState extends State<SearchPanel>
                 ),
               ),
             ),
-            AdmobBanner(
-              adUnitId: getBannerAdUnitId(bannerAdType.FULL_BANNER),
-              adSize: AdmobBannerSize.FULL_BANNER,
+            Center(
+              child: AdmobBanner(
+              adUnitId: getBannerAdUnitId(bannerAdType.BANNER),
+              adSize: AdmobBannerSize.BANNER,
             ),
+            ),
+            
             Padding(
                 padding: EdgeInsets.only(left: 0.0, right: 0.0),
                 child: isLoading

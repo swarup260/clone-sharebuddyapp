@@ -44,7 +44,7 @@
         <!-- ########## Production ############ -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBRwd6DfCwQU5NlAbAHiTiQJ7RIAug8h90"/>
+            android:value="AIzaSyCFl7tJo20BPyYb78blViWGd8f308nATqE"/>
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

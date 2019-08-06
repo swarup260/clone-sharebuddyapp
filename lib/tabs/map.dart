@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:sharebuddyapp/models/MyConnectivity.dart';
 import 'package:sharebuddyapp/widget/network_error.dart';
+import 'package:sharebuddyapp/widget/no_location_error.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:connectivity/connectivity.dart';
@@ -88,7 +89,7 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
                 );
               } else {
                 if (snapshot.data.length == 0) {
-                  return buildNoLocationCard();
+                  return NoLocationError();
                 }
                 return buildAlign(snapshot.data);
               }
@@ -116,33 +117,33 @@ class _MapTabState extends State<MapTab> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  AlertDialog buildNoLocationCard() {
-    return AlertDialog(
-        content: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      textBaseline: TextBaseline.alphabetic,
-      children: <Widget>[
-        Icon(Icons.not_listed_location),
-        Expanded(
-            child: RichText(
-          text: TextSpan(
-              text: "No SharePoint Location Available Near You. ",
-              style: TextStyle(fontSize: 15.0, color: Colors.black),
-              children: <TextSpan>[
-                TextSpan(
-                    text: "Please Try ListSearch",
-                    style: TextStyle(fontWeight: FontWeight.w800),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => ListTab()));
-                      }),
-              ]),
-        ))
-      ],
-    ));
-  }
+  // AlertDialog buildNoLocationCard() {
+  //   return AlertDialog(
+  //       content: Row(
+  //     mainAxisAlignment: MainAxisAlignment.start,
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     textBaseline: TextBaseline.alphabetic,
+  //     children: <Widget>[
+  //       Icon(Icons.not_listed_location),
+  //       Expanded(
+  //           child: RichText(
+  //         text: TextSpan(
+  //             text: "No SharePoint Location Available Near You. ",
+  //             style: TextStyle(fontSize: 15.0, color: Colors.black),
+  //             children: <TextSpan>[
+  //               TextSpan(
+  //                   text: "Please Try ListSearch",
+  //                   style: TextStyle(fontWeight: FontWeight.w800),
+  //                   recognizer: TapGestureRecognizer()
+  //                     ..onTap = () {
+  //                       Navigator.push(context,
+  //                           MaterialPageRoute(builder: (context) => ListTab()));
+  //                     }),
+  //             ]),
+  //       ))
+  //     ],
+  //   ));
+  // }
 
   Future<List<Datum>> locationList(int distance) async {
     try {
