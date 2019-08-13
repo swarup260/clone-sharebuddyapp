@@ -45,7 +45,8 @@ class _SettingTabState extends State<SettingTab>
                   icons: FontAwesomeIcons.locationArrow,
                   settingTab: "Add Location",
                   callback: () {
-                    _launchURL("https://sharebuddyapp.com/add_location.html");
+                    _launchURL(
+                        "https://sharebuddyapp.com/add_location.html#addlocationform");
                   },
                   flag: true,
                 ),
