@@ -55,7 +55,7 @@ class _SettingTabState extends State<SettingTab>
                   settingTab: "Share",
                   callback: () {
                     Share.share(
-                        'Click here and install ShareBuddyApp - ,https://sharebuddyapp.com');
+                        'Click here and install ShareBuddyApp - ,https://www.sharebuddyapp.com');
                   },
                 ),
                 MeunTab(
