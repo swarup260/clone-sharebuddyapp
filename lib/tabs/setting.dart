@@ -54,7 +54,8 @@ class _SettingTabState extends State<SettingTab>
                   icons: Icons.share,
                   settingTab: "Share",
                   callback: () {
-                    Share.share('Check the our app Sharebuddy');
+                    Share.share(
+                        'Click here and install ShareBuddyApp - ,https://sharebuddyapp.com');
                   },
                 ),
                 MeunTab(
