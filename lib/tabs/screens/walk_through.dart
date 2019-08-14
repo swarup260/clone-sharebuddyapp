@@ -7,6 +7,8 @@ import '../../models/PageModel.dart';
 import '../../widget/page_indicator.dart';
 import '../../api/networkManager.dart';
 import '../../api/apiEndpoint.dart';
+import '../../widget/network_error.dart';
+import '../../models/getMessage.dart';
 
 class Walkthrough extends StatelessWidget {
   @override
@@ -34,25 +36,6 @@ class WalkthroughBodyState extends State<WalkthroughBody> {
     _pageController.addListener(_pageListener);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.removeListener(_pageListener);
-    _pageController.dispose();
-    registerUser().then((value) async {
-      final SharedPreferences prefs = await getPrefs();
-      final getIsregisterUser = prefs.getBool("isregisterUser") ?? false;
-      if (!getIsregisterUser) {
-        final isregisterUser = await registerUser();
-        prefs.setBool("isregisterUser", isregisterUser);
-      }
-    }).catchError((onError) {
-      AlertDialog(
-        content: Text("Network Error"),
-      );
-    });
-  }
-
   Future<bool> registerUser() async {
     final deviceId = await getDeviceIdentity();
     try {
@@ -61,7 +44,7 @@ class WalkthroughBodyState extends State<WalkthroughBody> {
         "deviceType": Platform.isAndroid ? "android" : "ios",
         "pushTokenId": "testing"
       });
-      return result.status;
+      return getMessageFromJson(result).status;
     } catch (e) {
       return false;
     }
@@ -79,15 +62,6 @@ class WalkthroughBodyState extends State<WalkthroughBody> {
     }
   }
 
-/* 
-CircleAvatar(
-                  backgroundColor: Color(0xFFf7fbff),
-                  backgroundImage: AssetImage(pages[index].assetImagePath),
-                  radius: 125.0,
-                )
-
-
- */
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -103,8 +77,8 @@ CircleAvatar(
                 //SizedBox(height: 100.0),
                 SafeArea(
                   child: Container(
-                    height: MediaQuery.of(context).size.height  * 0.80,
-                    width: MediaQuery.of(context).size.width  * 1.0,
+                    height: MediaQuery.of(context).size.height * 0.80,
+                    width: MediaQuery.of(context).size.width * 1.0,
                     child: Image.asset(pages[index].assetImagePath),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(4))),
@@ -149,9 +123,15 @@ CircleAvatar(
                 color: Theme.of(context).primaryColor,
                 onPressed: () async {
                   final SharedPreferences prefs = await getPrefs();
-                  prefs.setBool("walkThroughView", true);
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => Home()));
+                  bool status = await registerUser();
+                  if (!status) {
+                    NetworkError();
+                  } else {
+                    prefs.setBool("isregisterUser", status);
+                    prefs.setBool("walkThroughView", true);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
+                  }
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -170,6 +150,13 @@ CircleAvatar(
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _pageController.removeListener(_pageListener);
+    _pageController.dispose();
   }
 }
 
