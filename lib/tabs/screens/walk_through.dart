@@ -42,7 +42,7 @@ class WalkthroughBodyState extends State<WalkthroughBody> {
       final result = await ajaxPost(getApiEndpoint(endpoint.register), {
         "deviceId": deviceId,
         "deviceType": Platform.isAndroid ? "android" : "ios",
-        "pushTokenId": "testing"
+        "pushTokenId": "live"
       });
       return getMessageFromJson(result).status;
     } catch (e) {
