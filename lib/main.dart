@@ -1,6 +1,7 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:admob_flutter/admob_flutter.dart';
+//import 'package:admob_flutter/admob_flutter.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +17,8 @@ void main() {
   FlutterError.onError = (FlutterErrorDetails details) {
     Crashlytics.instance.onError(details);
   };
-  Admob.initialize(getAppId());
+  //Admob.initialize(getAppId());
+  FirebaseAdMob.instance.initialize(appId: getAppId());
   runApp(MyApp());
 }
 
